@@ -26,9 +26,9 @@ void getPointsInImage(cv::Mat& img, std::vector<std::vector<Point>>& pointsList)
     bgr[1].convertTo(greenChannel, CV_32SC1);
     bgr[2].convertTo(redChannel, CV_32SC1);
     // Filter
-    cv::Mat blueFilter = blueChannel - redChannel - greenChannel;
-    cv::Mat redFilter = redChannel - blueChannel - greenChannel;
-    cv::Mat yellowFilter = 0.5 * (redChannel + greenChannel) - 2*blueChannel;
+    cv::Mat blueFilter = 2*blueChannel - redChannel - greenChannel;
+    cv::Mat redFilter = 2*redChannel - blueChannel - greenChannel;
+    cv::Mat yellowFilter = (redChannel + greenChannel) - 2*blueChannel;
     // Find points
     int kernelSize = KERNEL_SIZE;
     int kernelArea = kernelSize * kernelSize;
