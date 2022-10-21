@@ -68,7 +68,7 @@ bool Cluster::finalize() {
     int totalPoints = red + blue + yellow;
     std::cout << "red: " << red << ", ";
     std::cout << "blue" << blue << ", ";
-    std::cout << "yellow" << yellow << ", ";
+    std::cout << "yellow" << yellow << "\n";
     if(totalPoints < CLUSTER_MIN_POINTS) {
         // Not enough points to be piece
         return false;
