@@ -115,7 +115,6 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters, std::vect
         }
     }
     for(CheckersPiece& p : redPiecesOnBoard) {
-        std::cout << p.x << ", " << p.y << "\n";
         cv::Point2i coord = getBoardPos(p);
         if(coord.x == -1) {
             // Invaloid coordinate

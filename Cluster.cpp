@@ -66,9 +66,6 @@ bool Cluster::checkRange(Point& p1) {
 bool Cluster::finalize() {
     // Check total number of points
     int totalPoints = red + blue + yellow;
-    std::cout << "red: " << red << ", ";
-    std::cout << "blue" << blue << ", ";
-    std::cout << "yellow" << yellow << "\n";
     if(totalPoints < CLUSTER_MIN_POINTS) {
         // Not enough points to be piece
         return false;

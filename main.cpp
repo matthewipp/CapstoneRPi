@@ -96,7 +96,12 @@ int testBoardString(int argc, char** argv) {
     }
     // Align board
     ImageState boardState;
-    boardState.alignCamera(alignImg);
+    bool aligned = boardState.alignCamera(alignImg);
+    if(!aligned) {
+        std::cout << "Could not align board\n";
+        return 0;
+    }
+    std::cout << "Aligned Successfully!\n";
     // Get board state
     bool yay = boardState.generateBoardstate(stateImg);
     if(yay) {
@@ -104,7 +109,7 @@ int testBoardString(int argc, char** argv) {
         std::cout << boardState.boardState << "\n";
     }
     else {
-        std::cout << "Detected inavlid board\n";
+        std::cout << "Detected invalid board\n";
     }
     std::cout << "Board left and right side: " << boardState.edgeX[0] << ", " << boardState.edgeX[1] << "\n";
     std::cout << "Board top and bottom side: " << boardState.edgeY[0] << ", " << boardState.edgeY[1] << "\n";
