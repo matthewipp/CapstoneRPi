@@ -40,8 +40,17 @@ void getPointsInImage(cv::Mat& img, std::vector<std::vector<Point>>& pointsList)
             cv::Mat blueSquare = blueFilter(cv::Rect(j, i, kernelSize, kernelSize));
             cv::Mat redSquare = redFilter(cv::Rect(j, i, kernelSize, kernelSize));
             cv::Mat yellowSquare = yellowFilter(cv::Rect(j, i, kernelSize, kernelSize));
+            // Check for yellow
+            if(cv::sum(yellowSquare)[0] > filterCutoff) {
+                Point p;
+                p.x = i + kernelSize/2;
+                p.y = j + kernelSize/2;
+                p.type = YELLOW;
+                bluePoints.push_back(p);
+                redPoints.push_back(p);
+            }
             // Check for blue
-            if(cv::sum(blueSquare)[0] > filterCutoff) {
+            else if(cv::sum(blueSquare)[0] > filterCutoff) {
                 Point p;
                 p.x = i + kernelSize/2;
                 p.y = j + kernelSize/2;
@@ -54,15 +63,6 @@ void getPointsInImage(cv::Mat& img, std::vector<std::vector<Point>>& pointsList)
                 p.x = i + kernelSize/2;
                 p.y = j + kernelSize/2;
                 p.type = RED;
-                redPoints.push_back(p);
-            }
-            // Check for yellow
-            else if(cv::sum(yellowSquare)[0] > filterCutoff) {
-                Point p;
-                p.x = i + kernelSize/2;
-                p.y = j + kernelSize/2;
-                p.type = YELLOW;
-                bluePoints.push_back(p);
                 redPoints.push_back(p);
             }
         }
