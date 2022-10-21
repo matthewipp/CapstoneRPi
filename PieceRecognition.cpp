@@ -32,7 +32,7 @@ void getPointsInImage(cv::Mat& img, std::vector<std::vector<Point>>& pointsList)
     // Find points
     int kernelSize = KERNEL_SIZE;
     int kernelArea = kernelSize * kernelSize;
-    double filterCutoff = 160 * kernelArea;
+    double filterCutoff = FILTER_AVERAGE_CUTOFF * kernelArea;
     std::vector<Point> bluePoints;
     std::vector<Point> redPoints;
     for(int i = 0; i < 1088; i += kernelSize) {
