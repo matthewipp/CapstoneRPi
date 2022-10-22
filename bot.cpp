@@ -219,6 +219,7 @@ Bot::Move Bot::calc_move(uint8_t depth, int alpha, int beta) {
             }
         }
     }
+    std::cout << "Board Eval: " << best_value << std::endl;
     return best_move;
 }
 
@@ -227,7 +228,6 @@ int Bot::alpha_beta(uint8_t depth, int alpha, int beta) {
     if (depth == 0 || this->over()) {   // If game is over or if leaf node
         return this->eval();
     }
-    std::cout << "Hello" << std::endl; 
     if (this->color) {                  // If the current evaluation is from red perspective
         int value = -MAX_INT;
         for (Move move : this->moves()) {
@@ -264,7 +264,6 @@ bool Bot::over() {
 Function evaluates board
 */
 int Bot::eval() {
-    std::cout << "Here" << std::endl;
     int score = 0;
     if (this->over()) {
         return this->red_count > this->blue_count ? MAX_INT : -MAX_INT;
@@ -368,13 +367,11 @@ Calculates list of legal moves from current board state
 std::vector<Bot::Move> Bot::moves() {
     
     // Tracks which direction piece can move (along y-axis)
-    char dir;
+    int8_t dir;
     // Tracks whether it is possible to capture
     bool can_cap = false;
     // Stores return value
     std::vector<Move> ret;
-    // Turn continues
-    bool turn_continues = false;
 
     // Loop through every tile on the board
     for (uint8_t x = 0; x < 8; x++) {
@@ -385,7 +382,6 @@ std::vector<Bot::Move> Bot::moves() {
             // Skip if the piece is the wrong color
             if (IS_RED(board[x][y]) != color) 
                 continue;
-
             // If piece is crowned allow it to move in both directions; else, direction is determined by color
             if (IS_CROWNED(board[x][y]))
                 dir = 0;
