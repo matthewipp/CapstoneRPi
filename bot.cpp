@@ -24,7 +24,7 @@ uint Bot::gen_move(char b[8][8]) {
     this->set_board(b);
     // Set Red to move
     this->color = true;
-    std::cout << "Number of legal moves: " << this->moves().size() << std::endl;
+    // std::cout << "Number of legal moves: " << this->moves().size() << std::endl;
     uint32_t sum = 0;
     while (this->color) {
         sum += this->move();
@@ -231,7 +231,7 @@ Bot::Move Bot::calc_move(uint8_t depth, int alpha, int beta) {
             }
         }
     }
-    std::cout << "Board Eval: " << best_value << std::endl;
+    // std::cout << "Board Eval: " << best_value << std::endl;
     return best_move;
 }
 
@@ -296,7 +296,6 @@ int Bot::eval() {
                 score += IS_CROWNED(this->board[x][y]) ? 2 : 1;
             else
                 score -= IS_CROWNED(this->board[x][y]) ? 2 : 1;
-            // score += (2*IS_RED(this->board[x][y])-1)*(IS_CROWNED(this->board[x][y]) ? 2 : 1);
         }
     }
     return score;

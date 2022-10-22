@@ -107,9 +107,9 @@ void FSM::nextState() {
                         // Generate computer move
                         std::cout << "Generating Move\n";
                         printBoardState(boardState.boardState);
-                        std::cout << std::endl;
-                        std::cout << jimmy.gen_move(boardState.boardState) << std::endl;
+                        std::cout << "Number of boards analyzed: "<< jimmy.gen_move(boardState.boardState) << std::endl;
                         printBoardState(jimmy.board);
+                        // std::cout << jimmy.eval() << '\n' << std::endl;
                         boardState.createMoveList(moveList, jimmy.board);
                         std::cout << "Moves to make: " << (int)moveList.size() << std::endl;
                         if(boardState.majorFault) {
