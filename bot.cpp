@@ -24,9 +24,10 @@ uint Bot::gen_move(char b[8][8]) {
     this->set_board(b);
     // Set Red to move
     this->color = true;
-    // std::cout << "Number of legal moves: " << this->moves().size() << std::endl;
+    std::cout << "Number of legal moves: " << this->moves().size() << std::endl;
     uint32_t sum = 0;
     while (this->color) {
+        std::cout << "In loop" << std::endl;
         sum += this->move();
     }
     // Generate the move
@@ -199,7 +200,7 @@ Function calculates algorithms chosen move
 Bot::Move Bot::calc_move(uint8_t depth, int alpha, int beta) {
     int best_value;
     int value;
-    Move best_move;
+    Bot::Move best_move;
     if (this->color) {
         best_value = -MAX_INT;
         for (Move move : this->moves()) {
@@ -210,6 +211,9 @@ Bot::Move Bot::calc_move(uint8_t depth, int alpha, int beta) {
             this->apply_move(move);
             value = this->alpha_beta(depth, alpha, beta);
             this->undo_move(move);
+            if (move.t) {
+                this->focused = false;
+            }
             if (value >= best_value) {
                 best_move = move;
                 best_value = value;
@@ -225,6 +229,9 @@ Bot::Move Bot::calc_move(uint8_t depth, int alpha, int beta) {
             this->apply_move(move);
             value = this->alpha_beta(depth, alpha, beta);
             this->undo_move(move);
+            if (move.t) {
+                this->focused = false;
+            }
             if (value <= best_value) {
                 best_move = move;
                 best_value = value;
@@ -250,6 +257,9 @@ int Bot::alpha_beta(uint8_t depth, int alpha, int beta) {
             this->apply_move(move);
             value = max(value, this->alpha_beta(depth-1, alpha, beta));
             this->undo_move(move);
+            if (move.t) {
+                this->focused = false;
+            }
             alpha = max(alpha, value);
             if (value >= beta) 
                 break;
@@ -265,6 +275,9 @@ int Bot::alpha_beta(uint8_t depth, int alpha, int beta) {
             this->apply_move(move);
             value = min(value, this->alpha_beta(depth-1, alpha, beta));
             this->undo_move(move);
+            if (move.t) {
+                this->focused = false;
+            }
             beta = min(beta, value);
             if (value <= alpha)
                 break;
