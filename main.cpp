@@ -120,8 +120,101 @@ int testBoardString(int argc, char** argv) {
     return 0;
 }
 
+int demoImageRecognition(int argc, char** argv) {
+    bool running = true;
+    // Connect to camera
+    cv::VideoCapture camera(0, cv::CAP_V4L2);
+    if(!camera.isOpened()) {
+        std::cout << "Could not open camera\n";
+    }
+    camera.set(cv::CAP_PROP_FRAME_WIDTH, 1920);
+    camera.set(cv::CAP_PROP_FRAME_HEIGHT, 1088);
+    cv::Mat img;
+    std::string command;
+    ImageState boardState;
+    int totalAttempts = 0;
+    int successfulAttempts = 0;
+    // Run loop
+    while(running) {
+        std::cout << "Waiting for command: align, image, reset, show, exit\n";
+        std::cin >> command;
+        if(command == "align") {
+            // Take image and align boardstate
+            bool camSuccess = camera.read(img);
+            if(camSuccess) {
+                bool alignSuccess = boardState.alignCamera(img);
+                if(alignSuccess) {
+                    std::cout << "Successfully aligned board";
+                    std::cout << "Board left and right side: " << boardState.edgeX[0] << ", " << boardState.edgeX[1] << "\n";
+                    std::cout << "Board top and bottom side: " << boardState.edgeY[0] << ", " << boardState.edgeY[1] << "\n";
+                    std::cout << "Average Square Size (widthxheight): " << boardState.avgSquareWidth << " x ";
+                    std::cout << boardState.avgSquareHeight << "\n";
+                }
+                else {
+                    std::cout << "Could not align board\n";
+                }
+            }
+            else {
+                std::cout << "Error reading from camera\n";
+            }
+        }
+        else if(command == "image") {
+            // Take image and anlyze the board state
+            bool camSuccess = camera.read(img);
+            if(camSuccess) {
+                bool stateSuccess = boardState.generateBoardstate(img);
+                if(stateSuccess) {
+                    std::cout << "BoardState Successfully generated\n";
+                }
+                else {
+                    std::cout << "Error Generating Board State\n";
+                }
+                std::cout << boardState.boardState << "\n";
+                std::cout << "Was this the expected result (Y/n)?";
+                std::string response;
+                bool valid = false;
+                totalAttempts += 1;
+                while(!valid) {
+                    std::cin >> response;
+                    if(response == "y" || response == "y") {
+                        successfulAttempts += 1;
+                        valid = true;
+                    }
+                    if(response == "n" || response == "N") {
+                        valid = true;
+                    }
+                }
+            }
+            else {
+                std::cout << "Error reading from camera\n";
+            }
+        }
+        else if(command == "reset") {
+            totalAttempts = 0;
+            successfulAttempts = 0;
+            boardState = ImageState();
+            std::cout << "totalAttempts and successful attempts reset to 0\n";
+            std::cout << "boardState reinitialized, must realign\n";
+        }
+        else if(command == "show") {
+            std::cout << successfulAttempts << " / " << totalAttempts << "\n";
+            if(totalAttempts != 0) {
+                std::cout << (float)successfulAttempts / (float)totalAttempts * 100 << "%\n";
+            }
+        }
+        else if(command == "exit") {
+            running = false;
+        }
+        else {
+            std::cout << "Command not recognized\n";
+        }
+    }
+    return 0;
+}
+
 int main(int argc, char** argv) {
     //return testBoardAligner(argc, argv);
     //return testClusterizing(argc, argv);
-    return testBoardString(argc, argv);
+    //return testBoardString(argc, argv);
+    return demoImageRecognition(argc, argv);
 }
