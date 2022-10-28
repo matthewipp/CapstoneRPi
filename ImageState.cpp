@@ -230,6 +230,12 @@ bool ImageState::alignCamera(cv::Mat& img) {
     float avgHeight = heightSum / 42;
     avgSquareHeight = (int)avgWidth;
     avgSquareWidth = (int)avgHeight;
+    if(avgSquareHeight < 0) {
+        avgSquareHeight *= -1;
+    }
+    if(avgSquareWidth < 0) {
+        avgSquareWidth *= -1;
+    }
     // Extrapolate out to board edges, x and y from coordinates to board are switched
     int lr1 = (int)(leftSum / cornerHeight - avgWidth);
     int lr2 = (int)(rightSum / cornerHeight + avgWidth);

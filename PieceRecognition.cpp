@@ -32,7 +32,9 @@ void getPointsInImage(cv::Mat& img, std::vector<std::vector<Point>>& pointsList)
     // Find points
     int kernelSize = KERNEL_SIZE;
     int kernelArea = kernelSize * kernelSize;
-    double filterCutoff = FILTER_AVERAGE_CUTOFF * kernelArea;
+    double redFilterCutoff = RED_FILTER_AVERAGE_CUTOFF * kernelArea;
+    double blueFilterCutoff = BLUE_FILTER_AVERAGE_CUTOFF * kernelArea;
+    double yellowFilterCutoff = YELLOW_FILTER_AVERAGE_CUTOFF * kernelArea;
     std::vector<Point> bluePoints;
     std::vector<Point> redPoints;
     for(int i = 0; i < 1088; i += kernelSize) {
@@ -41,7 +43,7 @@ void getPointsInImage(cv::Mat& img, std::vector<std::vector<Point>>& pointsList)
             cv::Mat redSquare = redFilter(cv::Rect(j, i, kernelSize, kernelSize));
             cv::Mat yellowSquare = yellowFilter(cv::Rect(j, i, kernelSize, kernelSize));
             // Check for yellow
-            if(cv::sum(yellowSquare)[0] > filterCutoff) {
+            if(cv::sum(yellowSquare)[0] > yellowFilterCutoff) {
                 Point p;
                 p.x = i + kernelSize/2;
                 p.y = j + kernelSize/2;
@@ -50,7 +52,7 @@ void getPointsInImage(cv::Mat& img, std::vector<std::vector<Point>>& pointsList)
                 redPoints.push_back(p);
             }
             // Check for blue
-            else if(cv::sum(blueSquare)[0] > filterCutoff) {
+            else if(cv::sum(blueSquare)[0] > blueFilterCutoff) {
                 Point p;
                 p.x = i + kernelSize/2;
                 p.y = j + kernelSize/2;
@@ -58,7 +60,7 @@ void getPointsInImage(cv::Mat& img, std::vector<std::vector<Point>>& pointsList)
                 bluePoints.push_back(p);
             }
             // Check for red
-            else if(cv::sum(redSquare)[0] > filterCutoff) {
+            else if(cv::sum(redSquare)[0] > redFilterCutoff) {
                 Point p;
                 p.x = i + kernelSize/2;
                 p.y = j + kernelSize/2;
