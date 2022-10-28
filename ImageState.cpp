@@ -81,6 +81,10 @@ bool ImageState::generateBoardstate(cv::Mat& img) {
 
 bool ImageState::generateBoardState(std::vector<Cluster>& redClusters, std::vector<Cluster>& blueClusters) {
     bool success = true;
+    redPiecesOnBoard.clear();
+    redPiecesOffBoard.clear();
+    bluePiecesOnBoard.clear();
+    bluePiecesOffBoard.clear();
     // Red Pieces
     for(Cluster& c : redClusters) {
         CheckersPiece cp;
