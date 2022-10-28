@@ -153,6 +153,7 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters, std::vect
         }
     }
     // update boardsate string
+    boardState = "";
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
             boardState = boardState + pos[i][j];

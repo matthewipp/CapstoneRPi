@@ -16,7 +16,7 @@
 #include "Cluster.h"
 
 #define KERNEL_SIZE 4
-#define FILTER_AVERAGE_CUTOFF 80
+#define FILTER_AVERAGE_CUTOFF 60
 
 // Takes an image and edits the given string with the state
 void readBoard(std::string state);
