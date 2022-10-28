@@ -225,15 +225,24 @@ bool ImageState::alignCamera(cv::Mat& img) {
         }
     }
     // The number of heights and widths is 1 less than the number of corners found per edge
+    if(widthSum < 0)
+        widthSum *= -1;
+    if(heightSum < 0)
+        heightSum *= -1;
     float avgWidth = widthSum / 42;
     float avgHeight = heightSum / 42;
     avgSquareHeight = (int)avgWidth;
     avgSquareWidth = (int)avgHeight;
     // Extrapolate out to board edges, x and y from coordinates to board are switched
-    edgeY[0] = (int)(leftSum / cornerHeight - avgWidth);
-    edgeY[1] = (int)(rightSum / cornerHeight + avgWidth);
-    edgeX[0] = (int)(topSum / cornerWidth - avgHeight);
-    edgeX[1] = (int)(botSum / cornerWidth + avgHeight);
+    int lr1 = (int)(leftSum / cornerHeight - avgWidth);
+    int lr2 = (int)(rightSum / cornerHeight + avgWidth);
+    int tb1 = (int)(topSum / cornerWidth - avgHeight);
+    int tb2 = (int)(botSum / cornerWidth + avgHeight);
+    edgeY[0] = std::min(lr1, lr2);
+    edgeY[1] = std::max(lr1, lr2);
+    edgeX[0] = std::min(tb1, tb2);
+    edgeX[1] = std::max(tb1, tb2);
+
     return true;
 }
 
