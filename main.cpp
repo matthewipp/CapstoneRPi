@@ -123,12 +123,6 @@ int testBoardString(int argc, char** argv) {
 int demoImageRecognition(int argc, char** argv) {
     bool running = true;
     // Connect to camera
-    cv::VideoCapture camera(0, cv::CAP_V4L2);
-    if(!camera.isOpened()) {
-        std::cout << "Could not open camera\n";
-    }
-    camera.set(cv::CAP_PROP_FRAME_WIDTH, 1920);
-    camera.set(cv::CAP_PROP_FRAME_HEIGHT, 1088);
     cv::Mat img;
     std::string command;
     ImageState boardState;
@@ -140,7 +134,7 @@ int demoImageRecognition(int argc, char** argv) {
         std::cin >> command;
         if(command == "align") {
             // Take image and align boardstate
-            bool camSuccess = camera.read(img);
+            bool camSuccess = takePicture(img);
             if(camSuccess) {
                 bool alignSuccess = boardState.alignCamera(img);
                 if(alignSuccess) {
@@ -160,7 +154,7 @@ int demoImageRecognition(int argc, char** argv) {
         }
         else if(command == "image") {
             // Take image and anlyze the board state
-            bool camSuccess = camera.read(img);
+            bool camSuccess = takePicture(img);
             if(camSuccess) {
                 bool stateSuccess = boardState.generateBoardstate(img);
                 if(stateSuccess) {

@@ -103,3 +103,13 @@ void clusterize(std::vector<Point>& pList, bool isBlue, std::vector<Cluster>& fi
     }
     return;
 }
+
+bool takePicture(cv::Mat& img) {
+    cv::VideoCapture camera(0, cv::CAP_V4L2);
+    if(!camera.isOpened()) {
+        std::cout << "Could not open camera\n";
+    }
+    camera.set(cv::CAP_PROP_FRAME_WIDTH, 1920);
+    camera.set(cv::CAP_PROP_FRAME_HEIGHT, 1088);
+    return camera.read(img);
+}

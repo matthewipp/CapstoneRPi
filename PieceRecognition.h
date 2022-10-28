@@ -26,5 +26,7 @@ void readBoard(std::string state);
 void getPointsInImage(cv::Mat& img, std::vector<std::vector<Point>>& pointsList);
 // Turns list of Points into list of clusters
 void clusterize(std::vector<Point>& pList, bool isBlue, std::vector<Cluster>& finalClusters);
+// Tale picture
+bool takePicture(cv::Mat& img);
 
 #endif
