@@ -238,10 +238,22 @@ bool ImageState::alignCamera(cv::Mat& img) {
     int lr2 = (int)(rightSum / cornerHeight + avgWidth);
     int tb1 = (int)(topSum / cornerWidth - avgHeight);
     int tb2 = (int)(botSum / cornerWidth + avgHeight);
-    edgeY[0] = std::min(lr1, lr2);
-    edgeY[1] = std::max(lr1, lr2);
-    edgeX[0] = std::min(tb1, tb2);
-    edgeX[1] = std::max(tb1, tb2);
+    if(lr1 < lr2) {
+        edgeY[0] = lr1;
+        edgeY[1] = lr2;
+    }
+    else {
+        edgeY[0] = lr2;
+        edgeY[1] = lr1;
+    }
+    if(tb1 < tb2) {
+        edgeX[0] = tb1;
+        edgeX[1] = tb2;
+    }
+    else {
+        edgeX[0] = tb2;
+        edgeX[1] = tb1;
+    }
 
     return true;
 }
