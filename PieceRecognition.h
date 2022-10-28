@@ -16,8 +16,8 @@
 #include "Cluster.h"
 
 #define KERNEL_SIZE 4
-#define RED_FILTER_AVERAGE_CUTOFF 80
-#define BLUE_FILTER_AVERAGE_CUTOFF 80
+#define RED_FILTER_AVERAGE_CUTOFF 60
+#define BLUE_FILTER_AVERAGE_CUTOFF 60
 #define YELLOW_FILTER_AVERAGE_CUTOFF 150
 
 // Takes an image and edits the given string with the state
