@@ -225,10 +225,6 @@ bool ImageState::alignCamera(cv::Mat& img) {
         }
     }
     // The number of heights and widths is 1 less than the number of corners found per edge
-    if(widthSum < 0)
-        widthSum *= -1;
-    if(heightSum < 0)
-        heightSum *= -1;
     float avgWidth = widthSum / 42;
     float avgHeight = heightSum / 42;
     avgSquareHeight = (int)avgWidth;
