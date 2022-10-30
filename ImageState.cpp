@@ -218,7 +218,7 @@ bool ImageState::alignCamera(cv::Mat& img) {
     if(alongX) {
         std::cout << "alongX true\n";
     }
-    if(!alongX) {
+    if(alongX) {
         for(int i = 0; i < boardSize.area(); i++) {
             // Check if corner is not on the right end
             if(i % 7 != 6) {
