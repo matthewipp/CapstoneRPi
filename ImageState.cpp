@@ -203,7 +203,7 @@ bool ImageState::alignCamera(cv::Mat& img) {
     for(int i = 1; i < cornerWidth; i++) {
         testSum += corners[i].x - corners[i-1].x;
     }
-    if(testSum < 20 && testSum > -20) {
+    if(testSum < 50 && testSum > -50) {
         // Goes along y axis first
         alongX = false;
     }
@@ -218,7 +218,7 @@ bool ImageState::alignCamera(cv::Mat& img) {
     if(alongX) {
         std::cout << "alongX true\n";
     }
-    if(alongX) {
+    if(!alongX) {
         for(int i = 0; i < boardSize.area(); i++) {
             // Check if corner is not on the right end
             if(i % 7 != 6) {
@@ -327,9 +327,9 @@ cv::Point2i ImageState::getBoardPos(CheckersPiece& p) {
         pos.x = -1;
         pos.y = -1;
     }
-    if(yDist < minHeight || yDist > minHeight) {
+    /*if(yDist < minHeight || yDist > minHeight) {
         pos.x = -1;
         pos.y = -1;
-    }
+    }*/
     return pos;
 }
