@@ -278,10 +278,15 @@ cv::Point2i ImageState::getBoardPos(CheckersPiece& p) {
     // The calculated value is always larger than p.x or p.y
     // Must be in the middle 3/5 of the board
     int minWidth = avgSquareWidth / 5;
+    int minHeight = avgSquareHeight / 5;
     int xDist = edgeX[0] + (pos.x+1)*avgSquareWidth - p.x;
     int yDist = edgeY[0] + (pos.y+1)*avgSquareHeight - p.y;
     if(xDist < minWidth || xDist > minWidth * 4) {
         // Piece is close to a border
+        pos.x = -1;
+        pos.y = -1;
+    }
+    if(yDist < minHeight || yDist > minHeight) {
         pos.x = -1;
         pos.y = -1;
     }

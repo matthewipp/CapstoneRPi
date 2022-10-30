@@ -93,6 +93,5 @@ bool Cluster::finalize() {
     x = xSum / totalPoints;
     y = ySum / totalPoints;
     isValid = true;
-    std::cout << red << ", " << blue << ", " << yellow << "\n";
     return true;
 }

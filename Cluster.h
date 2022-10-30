@@ -14,8 +14,8 @@
 #include <string>
 
 // Max distance in pixels squared
-#define CLUSTER_MIN_POINTS 50
-#define CLUSTER_KING_MIN_POINTS 50
+#define CLUSTER_MIN_POINTS 60
+#define CLUSTER_KING_MIN_POINTS 60
 #define CLUSTER_MAX_DISTANCE_SQUARE 200
 
 enum PointType {RED, BLUE, YELLOW};
