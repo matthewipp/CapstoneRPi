@@ -46,18 +46,15 @@ bool Cluster::checkRange(Point& p1) {
     // Check for close points until one is found
     // BREAKS WHEN POINT IS FOUND
     for(Point& p2 : points) {
-        // Check if points are same color or one is yellow
-        if(p2.type == YELLOW || p1.type == YELLOW || p2.type == p1.type) {
-            // Check distance
-            int xDiff = p2.x - p1.x;
-            int yDiff = p2.y - p1.y;
-            if(xDiff*xDiff + yDiff*yDiff < CLUSTER_MAX_DISTANCE_SQUARE) {
-                // Point is within range
-                addPoint(p1);
-                found = true;
-                break;
-            } 
-        }
+        // Check distance
+        int xDiff = p2.x - p1.x;
+        int yDiff = p2.y - p1.y;
+        if(xDiff*xDiff + yDiff*yDiff < CLUSTER_MAX_DISTANCE_SQUARE) {
+            // Point is within range
+            addPoint(p1);
+            found = true;
+            break;
+        } 
     }
     // Return whether close point was found
     return found;
@@ -96,5 +93,6 @@ bool Cluster::finalize() {
     x = xSum / totalPoints;
     y = ySum / totalPoints;
     isValid = true;
+    std::cout << red << ", " << blue << ", " << yellow << "\n";
     return true;
 }
