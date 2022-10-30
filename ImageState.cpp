@@ -331,6 +331,6 @@ cv::Point2i ImageState::getBoardPos(CheckersPiece& p) {
         pos.x = -1;
         pos.y = -1;
     }*/
-    std::cout << pos.x << ", " << pos.y << "\n";
+    std::cout << p.x << ", " << p.y << "\n";
     return pos;
 }
