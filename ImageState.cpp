@@ -318,8 +318,8 @@ cv::Point2i ImageState::getBoardPos(CheckersPiece& p) {
     // Check distance, if too far, return -1
     // The calculated value is always larger than p.x or p.y
     // Must be in the middle 3/5 of the board
-    int minWidth = avgSquareWidth / 5;
-    int minHeight = avgSquareHeight / 5;
+    int minWidth = avgSquareHeight / 5;
+    int minHeight = avgSquareWidth / 5;
     int xDist = edgeX[0] + (pos.x+1)*avgSquareHeight - p.x;
     int yDist = edgeY[0] + (pos.y+1)*avgSquareWidth - p.y;
     if(xDist < minWidth || xDist > minWidth * 4) {
@@ -327,9 +327,9 @@ cv::Point2i ImageState::getBoardPos(CheckersPiece& p) {
         pos.x = -1;
         pos.y = -1;
     }
-    /*if(yDist < minHeight || yDist > minHeight) {
+    if(yDist < minHeight || yDist > minHeight) {
         pos.x = -1;
         pos.y = -1;
-    }*/
+    }
     return pos;
 }
