@@ -197,6 +197,16 @@ bool ImageState::alignCamera(cv::Mat& img) {
     cv::Mat newImage;
     cv::undistort(img, newImage, k, d);
     */
+    // test orientation
+    float testSum = 0;
+    bool alongX = true;
+    for(int i = 1; i < cornerWidth; i++) {
+        testSum += corners[i].x - corners[i-1].x;
+    }
+    if(testSum < 20 && testSum > -20) {
+        // Goes along y axis first
+        alongX = false;
+    }
     // Find grid size
     // Calculate average board width and height:
     float widthSum = 0;
@@ -205,28 +215,56 @@ bool ImageState::alignCamera(cv::Mat& img) {
     float botSum = 0;
     float leftSum = 0;
     float rightSum = 0;
-    for(int i = 0; i < boardSize.area(); i++) {
-        // Check if corner is not on the right end
-        if(i % 7 != 6) {
-            widthSum += corners[i+1].x - corners[i].x;
+    if(alongX) {
+        for(int i = 0; i < boardSize.area(); i++) {
+            // Check if corner is not on the right end
+            if(i % 7 != 6) {
+                widthSum += corners[i+1].x - corners[i].x;
+            }
+            else {
+                rightSum += corners[i].x;
+            }
+            // Check if corner is on the left
+            if(i % cornerWidth == 0) {
+                leftSum += corners[i].x;
+            }
+            // Check if corner is not on the bottom
+            if(i < boardSize.area() - cornerWidth) {
+                heightSum += corners[i+cornerWidth].y - corners[i].y;     
+            }
+            else {
+                botSum += corners[i].y;
+            }
+            // Check if corner is on the top
+            if(i < cornerWidth) {
+                topSum += corners[i].y;
+            }
         }
-        else {
-            rightSum += corners[i].x;
-        }
-        // Check if corner is on the left
-        if(i % cornerWidth == 0) {
-            leftSum += corners[i].x;
-        }
-        // Check if corner is not on the bottom
-        if(i < boardSize.area() - cornerWidth) {
-            heightSum += corners[i+cornerWidth].y - corners[i].y;     
-        }
-        else {
-            botSum += corners[i].y;
-        }
-        // Check if corner is on the top
-        if(i < cornerWidth) {
-            topSum += corners[i].y;
+    }
+    else {
+        for(int i = 0; i < boardSize.area(); i++) {
+            // Check if corner is not on the right end
+            if(i < boardSize.area() - cornerHeight) {
+                widthSum += corners[i+cornerHeight].x - corners[i].x;
+            }
+            else {
+                rightSum += corners[i].x;
+            }
+            // Check if corner is on the left
+            if(i < cornerHeight) {
+                leftSum += corners[i].x;
+            }
+            // Check if corner is not on the bottom
+            if(i % cornerHeight != 6) {
+                heightSum += corners[i+cornerWidth].y - corners[i].y;     
+            }
+            else {
+                botSum += corners[i].y;
+            }
+            // Check if corner is on the top
+            if(i % cornerHeight == 0) {
+                topSum += corners[i].y;
+            }
         }
     }
     // The number of heights and widths is 1 less than the number of corners found per edge
