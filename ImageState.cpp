@@ -327,7 +327,7 @@ cv::Point2i ImageState::getBoardPos(CheckersPiece& p) {
         pos.x = -1;
         pos.y = -1;
     }
-    if(yDist < minHeight || yDist > minHeight) {
+    if(yDist < minHeight || yDist > minHeight * 4) {
         pos.x = -1;
         pos.y = -1;
     }
