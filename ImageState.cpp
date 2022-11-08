@@ -13,6 +13,15 @@
 #include "Cluster.h"
 #include "PieceRecognition.h"
 
+const char ImageState::STARTING_BOARD[8][8] = {{'r', 0 ,'r', 0 ,'r', 0 ,'r', 0 },
+                                               { 0 ,'r', 0 ,'r', 0 ,'r', 0 ,'r'},
+                                               {'r', 0 ,'r', 0 ,'r', 0 ,'r', 0 },
+                                               { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },
+                                               { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },
+                                               { 0 ,'b', 0 ,'b', 0 ,'b', 0 ,'b'},
+                                               {'b', 0 ,'b', 0 ,'b', 0 ,'b', 0 },
+                                               { 0 ,'b', 0 ,'b', 0 ,'b', 0 ,'b'}};
+
 int ImageState::countRedKingsOnBoard() {
     int counter = 0;
     for(CheckersPiece& piece : redPiecesOnBoard) {
@@ -53,7 +62,7 @@ int ImageState::countBlueKingsOffBoard() {
     return counter;
 }
 
-bool ImageState::generateBoardstate(cv::Mat& img) {
+bool ImageState::generateBoardstate(cv::Mat& img, bool checkLegalMove = true) {
     // Get points
     std::vector<std::vector<Point>> points;
     getPointsInImage(img, points);
@@ -70,8 +79,8 @@ bool ImageState::generateBoardstate(cv::Mat& img) {
     isValidState = valid;
     // check if the move was legal here
     bool wasLegalMove = true;
-    if(valid && wasLegalMove) {
-        lastValidBoardState = boardState;
+    if(!majorFault && (valid && wasLegalMove || !checkLegalMove)) {
+        std::memcpy(lastValidBoardState, boardState, sizeof(boardState));
         return true;
     }
     else {
@@ -79,7 +88,8 @@ bool ImageState::generateBoardstate(cv::Mat& img) {
     }
 }
 
-bool ImageState::generateBoardState(std::vector<Cluster>& redClusters, std::vector<Cluster>& blueClusters) {
+bool ImageState::generateBoardState(std::vector<Cluster>& redClusters, 
+                                    std::vector<Cluster>& blueClusters) {
     bool success = true;
     redPiecesOnBoard.clear();
     redPiecesOffBoard.clear();
@@ -112,24 +122,24 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters, std::vect
             bluePiecesOffBoard.push_back(cp);
     }
     // Check positions on board
-    char pos[8][8];
+    // CLear boardstate
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
-            pos[i][j] = '.';
+            boardState[i][j] = '.';
         }
     }
     for(CheckersPiece& p : redPiecesOnBoard) {
         cv::Point2i coord = getBoardPos(p);
         if(coord.x == -1) {
-            // Invaloid coordinate
+            // Invalid coordinate
             success = false;
         }
-        else if(pos[coord.x][coord.y] == '.') {
+        else if(boardState[coord.x][coord.y] == '.') {
             if(p.isKing) {
-                pos[coord.x][coord.y] = 'R';
+                boardState[coord.x][coord.y] = 'R';
             } 
             else {
-                pos[coord.x][coord.y] = 'r';
+                boardState[coord.x][coord.y] = 'r';
             }
         } 
         else {
@@ -142,27 +152,20 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters, std::vect
         if(coord.x == -1) {
             // Invalid coordinate
             success = false;
+
         }
-        if(pos[coord.x][coord.y] == '.') {
+        if(boardState[coord.x][coord.y] == '.') {
             if(p.isKing) {
-                pos[coord.x][coord.y] = 'B';
+                boardState[coord.x][coord.y] = 'B';
             } 
             else {
-                pos[coord.x][coord.y] = 'b';
+                boardState[coord.x][coord.y] = 'b';
             }
         } 
         else {
             // Two pieces on same spot
             success = false;
         }
-    }
-    // update boardsate string
-    boardState = "";
-    for(int i = 0; i < 8; i++) {
-        for(int j = 0; j < 8; j++) {
-            boardState = boardState + pos[i][j];
-        }
-        boardState = boardState + "\n";
     }
     return success;
 }
@@ -332,4 +335,28 @@ cv::Point2i ImageState::getBoardPos(CheckersPiece& p) {
         pos.y = -1;
     }
     return pos;
+}
+
+void ImageState::createMoveList(std::vector<ImageMove>& moveList) {
+    createMoveList(moveList, STARTING_BOARD);
+}
+
+void ImageState::createMoveList(std::vector<ImageMove>& moveList, const char desiredBoard[8][8]) {
+    // Setup
+    majorFault = false;
+    cv::Mat img;
+    // Take picture
+    bool imgSuccess = takePicture(img);
+    if(!imgSuccess) {
+        majorFault = true;
+        return;
+    }
+    // Make boardstate
+    generateBoardstate(img, true);
+    moveList.clear();
+    for(int i = 0; i < 8; i++) {
+        for(int j = 0; j < 8; j++) {
+            
+        }
+    }
 }

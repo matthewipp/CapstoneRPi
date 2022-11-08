@@ -22,6 +22,11 @@ struct CheckersPiece {
     bool isKing;
 };
 
+struct ImageMove {
+    int startX, startY;
+    int endX, endY;
+};
+
 class ImageState {
     public:
         // Returns the number of red kings on the board
@@ -36,11 +41,15 @@ class ImageState {
         bool generateBoardState(std::vector<Cluster>& redClusters, std::vector<Cluster>& blueClusters);
         // changes the board state to match the image
         // The state still changes even if false is returned
-        bool generateBoardstate(cv::Mat& img);
+        bool generateBoardstate(cv::Mat& img, bool checkLegalMove = true);
         // Aligns camera to checkers board, returns true or false depending on if it worked
         bool alignCamera(cv::Mat& img);
         // Returns the row or column 
         cv::Point2i getBoardPos(CheckersPiece& p);
+        // Returns moves to create starting boardState
+        void createMoveList(std::vector<ImageMove>& moveList);
+        // Returns moves to create given boardstate
+        void createMoveList(std::vector<ImageMove>& moveList, const char desiredBoard[8][8]);
         std::vector<cv::Point2f> boardCorners;
         bool isValidState = false;
         // 0 is lower valued edge
@@ -48,12 +57,16 @@ class ImageState {
         int edgeY[2];
         int avgSquareWidth;
         int avgSquareHeight;
-        std::string boardState = "";
-        std::string lastValidBoardState = "";
+        char boardState[8][8];
+        char lastValidBoardState[8][8];
+        bool majorFault = false;
         std::vector<CheckersPiece> redPiecesOnBoard;
         std::vector<CheckersPiece> bluePiecesOnBoard;
         std::vector<CheckersPiece> redPiecesOffBoard;
         std::vector<CheckersPiece> bluePiecesOffBoard;
+        std::vector<CheckersPiece> redErrorPiecesOnBoard;
+        std::vector<CheckersPiece> blueErrorPiecesOnBoard;
+        static const char STARTING_BOARD[8][8];
     private:
         // Turns cluster into piece
         void createPieceFromCluster(CheckersPiece& checker, Cluster& cluster);

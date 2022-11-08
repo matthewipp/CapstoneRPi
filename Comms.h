@@ -1,0 +1,30 @@
+/**
+ * @file Comms.h
+ * @author EMNEM
+ * @brief handles comms using serial UART
+ * @version 0.1
+ * @date 2022-11-03
+ */
+
+#ifndef COMMS_H
+#define COMMS_H
+
+#define SERIAL_PORT "/tty/dev/0"
+//http://wiringpi.com/reference/serial-library/
+
+class Comms {
+    public:
+        Comms();
+        bool isConnected();
+        int getFD();
+        bool openConnection();
+        bool closeConnection();
+        bool checkData(char*& flags, int& len);
+        void sendData(char* message, int len);
+        void flush();
+    private:
+        bool connected;
+        int fd;
+};
+
+#endif

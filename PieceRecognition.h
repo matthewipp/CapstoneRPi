@@ -20,8 +20,6 @@
 #define BLUE_FILTER_AVERAGE_CUTOFF 60
 #define YELLOW_FILTER_AVERAGE_CUTOFF 120
 
-// Takes an image and edits the given string with the state
-void readBoard(std::string state);
 // Returns list of points for both red and blue pieces
 void getPointsInImage(cv::Mat& img, std::vector<std::vector<Point>>& pointsList);
 // Turns list of Points into list of clusters

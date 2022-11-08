@@ -10,7 +10,10 @@
 #include <fstream>
 #include <vector>
 #include <opencv2/opencv.hpp>
+#include <thread>
 #include "PieceRecognition.h"
+#include "FSM.h"
+#include "Comms.h"
 
 int testClusterizing(int argc, char** argv) {
     // Check arguments
@@ -103,7 +106,8 @@ int testBoardString(int argc, char** argv) {
     }
     std::cout << "Aligned Successfully!\n";
     // Get board state
-    bool yay = boardState.generateBoardstate(stateImg);
+    bool majorFault;
+    bool yay = boardState.generateBoardstate(stateImg, majorFault);
     if(yay) {
         std::cout << "Successfully imaged board: \n";
         std::cout << boardState.boardState << "\n";
@@ -156,7 +160,8 @@ int demoImageRecognition(int argc, char** argv) {
             // Take image and anlyze the board state
             bool camSuccess = takePicture(img);
             if(camSuccess) {
-                bool stateSuccess = boardState.generateBoardstate(img);
+                bool majorFault = false;
+                bool stateSuccess = boardState.generateBoardstate(img, majorFault);
                 if(stateSuccess) {
                     std::cout << "BoardState Successfully generated\n";
                 }
@@ -206,9 +211,55 @@ int demoImageRecognition(int argc, char** argv) {
     return 0;
 }
 
+void fsmLoop(FSM& fsm, char* sentData, int sentDataLen, char*& returnData, int& returnDataLen, bool& calculating) {
+    returnData = fsm.runThread(sentData, returnDataLen);
+    calculating = false;
+}
+
+int runCheckers(int argc, char** argv) {
+    volatile bool calculating = false;
+    FSM fsm(true);
+    Comms uart;
+    std::thread tCalc;
+    // main loop
+    while(true) {
+        // UART
+        char* flags;
+        char* returnData;
+        int returnDataLen;
+        int flagsLen;
+        bool newData;
+        std::thread tCalc;
+        if(uart.isConnected()) {
+            newData = uart.checkData(flags, flagsLen);
+            // Run FSM if new data received
+            if(newData && returnData == nullptr) {
+                if(!calculating) {
+                    calculating = true;
+                    tCalc = std::thread(fsmLoop, std::ref(fsm), flags, flagsLen, 
+                                        std::ref(returnData), std::ref(returnDataLen), 
+                                        std::ref(calculating));
+                }
+            }
+            else {
+                if(!calculating) {
+                    uart.sendData(returnData, returnDataLen);
+                    delete[] returnData;
+                }
+            }
+            delete[] flags;
+        }
+        else {
+            uart.openConnection();
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(250));
+    }
+}
+
 int main(int argc, char** argv) {
     //return testBoardAligner(argc, argv);
     //return testClusterizing(argc, argv);
     //return testBoardString(argc, argv);
-    return demoImageRecognition(argc, argv);
+    //return demoImageRecognition(argc, argv);
+    return runCheckers(argc, argv);
 }
