@@ -37,8 +37,8 @@ void getPointsInImage(cv::Mat& img, std::vector<std::vector<Point>>& pointsList)
     double yellowFilterCutoff = YELLOW_FILTER_AVERAGE_CUTOFF * kernelArea;
     std::vector<Point> bluePoints;
     std::vector<Point> redPoints;
-    for(int i = 0; i < 1920; i += kernelSize) {
-        for(int j = 0; j < 1088; j += kernelSize) {
+    for(int i = 0; i < 1088; i += kernelSize) {
+        for(int j = 0; j < 1920; j += kernelSize) {
             cv::Mat blueSquare = blueFilter(cv::Rect(j, i, kernelSize, kernelSize));
             cv::Mat redSquare = redFilter(cv::Rect(j, i, kernelSize, kernelSize));
             cv::Mat yellowSquare = yellowFilter(cv::Rect(j, i, kernelSize, kernelSize));
