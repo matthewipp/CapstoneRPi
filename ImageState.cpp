@@ -102,8 +102,10 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters,
         CheckersPiece cp;
         cp.isBlue = false;
         cp.isKing = c.isKing;
-        cp.x = c.x;
-        cp.y = c.y;
+        cp.imageX = c.x;
+        cp.imageY = c.y;
+        cp.x = -1;
+        cp.y = -1;
         cp.onBoard = edgeX[0] < cp.x && cp.x < edgeX[1] && edgeY[0] < cp.y && cp.y < edgeY[1];
         if(cp.onBoard)
             redPiecesOnBoard.push_back(cp);
@@ -115,8 +117,10 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters,
         CheckersPiece cp;
         cp.isBlue = true;
         cp.isKing = c.isKing;
-        cp.x = c.x;
-        cp.y = c.y;
+        cp.imageX = c.x;
+        cp.imageX = c.y;
+        cp.x = -1;
+        cp.y = -1;
         cp.onBoard = edgeX[0] < cp.x && cp.x < edgeX[1] && edgeY[0] < cp.y && cp.y < edgeY[1];
         if(cp.onBoard)
             bluePiecesOnBoard.push_back(cp);
@@ -132,6 +136,8 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters,
     }
     for(CheckersPiece& p : redPiecesOnBoard) {
         cv::Point2i coord = getBoardPos(p);
+        p.x = coord.x;
+        p.y = coord.y;
         if(coord.x == -1) {
             // Invalid coordinate
             success = false;
@@ -152,6 +158,8 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters,
     }
     for(CheckersPiece& p : bluePiecesOnBoard) {
         cv::Point2i coord = getBoardPos(p);
+        p.x = coord.x;
+        p.y = coord.y;
         if(coord.x == -1) {
             // Invalid coordinate
             success = false;
