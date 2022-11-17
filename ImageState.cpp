@@ -267,8 +267,8 @@ bool ImageState::alignCamera(cv::Mat& img) {
     // The number of heights and widths is 1 less than the number of corners found per edge
     float avgWidth = widthSum / 42;
     float avgHeight = heightSum / 42;
-    avgSquareHeight = (int)avgWidth;
-    avgSquareWidth = (int)avgHeight;
+    avgSquareHeight = (int)avgHeight;
+    avgSquareWidth = (int)avgWidth;
     if(avgSquareHeight < 0) {
         avgSquareHeight *= -1;
     }
@@ -312,10 +312,10 @@ cv::Point2i ImageState::getBoardPos(CheckersPiece& p) {
     // Check distance, if too far, return -1
     // The calculated value is always larger than p.x or p.y
     // Must be in the middle 3/5 of the board
-    int minWidth = avgSquareHeight / 5;
-    int minHeight = avgSquareWidth / 5;
-    int xDist = edgeX[0] + (pos.x+1)*avgSquareHeight - p.x;
-    int yDist = edgeY[0] + (pos.y+1)*avgSquareWidth - p.y;
+    int minWidth = avgSquareWidth / 5;
+    int minHeight = avgSquareHeight / 5;
+    int xDist = edgeX[0] + (pos.x+1)*avgSquareWidth - p.x;
+    int yDist = edgeY[0] + (pos.y+1)*avgSquareHeight - p.y;
     if(xDist < minWidth || xDist > minWidth * 4) {
         // Piece is close to a border
         pos.x = -1;
