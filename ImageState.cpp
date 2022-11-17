@@ -186,25 +186,6 @@ bool ImageState::alignCamera(cv::Mat& img) {
         std::cout << "Did not find grid\n";
         return false;
     }
-    /*
-    // Undistort
-    std::vector<cv::Point3f> objPoints;
-    std::vector<std::vector<cv::Point3f>> objPointsOuter;
-    std::vector<std::vector<cv::Point2f>> cornersOuter;
-    for(int i = 0; i < 7; i++) {
-        for(int j = 0; j < 7; j++) {
-            objPoints.push_back(cv::Point3f((float)j*10, (float)i*10, 0.0f));
-        }
-    }
-    objPointsOuter.push_back(objPoints);
-    cornersOuter.push_back(corners);
-    cv::Mat k, d;
-    std::vector<cv::Mat> rvecs, tvecs;
-    //cv::calibrateCamera(objPointsOuter, cornersOuter, img.size(), k, d, rvecs, tvecs);
-    cv::Mat newCameraMat = cv::getOptimalNewCameraMatrix(k, d, img.size(), 1, img.size());
-    cv::Mat newImage;
-    cv::undistort(img, newImage, k, d);
-    */
     // test orientation
     float testSum = 0;
     bool alongX = true;
@@ -375,6 +356,8 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
             }
         }
     }
+    std::cout << "Classified Incorrect Squares\n";
+    std::cout << (int)shouldBeEmpty.size() << std::endl;
     // Match incorrect squares to pieces
     for(IncorrectSquare& s : shouldBeFilled) {
         bool shouldBeBlue = false;
@@ -410,6 +393,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
             }
         }
     }
+    std::cout << "Matched some incorrect squares\n";
     // Remove incorrect unmatched pieces
     for(IncorrectSquare& s : shouldBeEmpty) {
         if(s.matchedPiece == nullptr) {
