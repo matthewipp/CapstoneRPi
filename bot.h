@@ -16,6 +16,12 @@ typedef struct {
     bool t;         // Does the turn continue?
 } Move;
 
+typedef struct {
+    char b[8][8];
+    bool cont;
+    uchar p[2];
+} State;
+
 class Bot {
 public:
     uchar depth;
@@ -43,6 +49,7 @@ public:
     void gen_move(char b[8][8]);
     bool board_equal(char b1[8][8], char b2[8][8]);
     bool comp_boards(char bi[8][8], char bf[8][8]);
+    State init_state(char b[8][8], bool cont, uchar p[2]);
     
 };
 

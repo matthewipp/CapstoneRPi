@@ -85,10 +85,38 @@ bool Bot::board_equal(char b1[8][8], char b2[8][8]) {
     return true;
 }
 
+State init_state(char b[8][8], bool cont, uchar p[2]) {
+    State ret;
+    std::memcpy(ret.b, b, sizeof(b));
+    ret.cont = cont;
+    std::memcpy(ret.p, p, sizeof(p));
+    return ret;
+}
+
+bool Bot::comp_boards(char bi[8][8], char bf[8][8]) {
+    std::vector<State> stack;
+    uchar p[2] = {0, 0};
+    State s = init_state(bi, false, p);
+    stack.push_back(s);
+    while (stack.size()) {
+        s = stack.back();
+        stack.pop_back();
+        this->set_board(s.b);
+        this->color = false;
+        for (Move m : this->moves()) {
+            this->apply_move(m);
+            if (this->board_equal(this->board, bf)) {
+                return true;
+            }
+            if (!this->color) {
+                return false;
+            }
+        }
+    }
+    return false;
+}
+
 /*
-Function to compare two boards to determine if one can be reached via the other with a single
-legal move
-*/
 bool Bot::comp_boards(char bi[8][8], char bf[8][8]) {
     std::vector<char[8][8]> stack;
     char state[8][8];
@@ -109,6 +137,7 @@ bool Bot::comp_boards(char bi[8][8], char bf[8][8]) {
     }
     return false;
 }
+*/
 
 /*
 Function for undoing previously applied Move (requires previous move as argument)

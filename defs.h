@@ -3,7 +3,7 @@
 #define MY_DEFS
 
 #define uchar           unsigned char
-#define uint            unsigned int
+// #define uint            unsigned int
 #define MAX_INT         2147483647
 #define RED_DIR         1
 #define BLUE_DIR        -1
