@@ -335,10 +335,6 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
     // Setup
     majorFault = false;
     moveList.clear();
-    std::cout << "Desired:\n";
-    printBoardState(desiredBoard);
-    std::cout << "Current:\n";
-    printBoardState(boardState);
     std::vector<IncorrectSquare> shouldBeEmpty;
     std::vector<IncorrectSquare> shouldBeFilled;
     std::vector<CheckersPiece*> matchedPieces;
@@ -445,7 +441,6 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
             moveList.push_back(move);
         }
     }
-    printBoardState(desiredBoard);
 }
 
 bool ImageState::findEmptySpotOffBoard(ImageMove& move, IncorrectSquare& s) {
