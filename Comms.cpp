@@ -34,6 +34,7 @@ bool Comms::closeConnection() {
 
 bool Comms::checkData(char& flags) {
     int data;
+    std::cout << "Enter simulated flags byte from the MSP430: ";
     std::cin >> data;
     flags = (char)data;
     return true;
