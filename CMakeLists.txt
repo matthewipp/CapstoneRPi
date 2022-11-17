@@ -7,6 +7,7 @@ enable_testing()
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 set(Image_Recog_H_Files "Cluster.h" "ImageState.h" "PieceRecognition.h" "FSM.h" "Comms.h")
 set(Image_Recog_CPP_Files "Cluster.cpp" "ImageState.cpp" "PieceRecognition.cpp" "FSM.cpp" "Comms.cpp")
 set(Bot_H_Files "defs.h" "bot.h")
