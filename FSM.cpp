@@ -137,7 +137,9 @@ void FSM::nextState() {
 void FSM::outputState() {
     switch(tempNextState) {
         case WAIT_FOR_PLAYER:
-            setOutput(outputFlags);
+            if(outputFlags) {
+                setOutput(outputFlags);
+            }
             break;
         case SEND_MOVES:
             setOutput(outputFlags, moveList.front());
@@ -171,4 +173,5 @@ void FSM::setOutput(char flags, ImageMove& move) {
     currentOutput[9] = (char)(move.endY >> 8);
     currentOutput[10] = (char)(move.endY);
     dataSent = false;
+    outputLength = 11;
 }
