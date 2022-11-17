@@ -13,14 +13,14 @@
 #include "Cluster.h"
 #include "PieceRecognition.h"
 
-const char ImageState::STARTING_BOARD[8][8] = {{'r', 0 ,'r', 0 ,'r', 0 ,'r', 0 },
-                                               { 0 ,'r', 0 ,'r', 0 ,'r', 0 ,'r'},
-                                               {'r', 0 ,'r', 0 ,'r', 0 ,'r', 0 },
-                                               { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },
-                                               { 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 },
-                                               { 0 ,'b', 0 ,'b', 0 ,'b', 0 ,'b'},
-                                               {'b', 0 ,'b', 0 ,'b', 0 ,'b', 0 },
-                                               { 0 ,'b', 0 ,'b', 0 ,'b', 0 ,'b'}};
+const char ImageState::STARTING_BOARD[8][8] = {{ 0 ,'r', 0 , 0 , 0 ,'b', 0 ,'b'},
+                                               {'r', 0 ,'r', 0 , 0 , 0 ,'b', 0 },
+                                               { 0 ,'r', 0 , 0 , 0 ,'b', 0 ,'b'},
+                                               {'r', 0 ,'r', 0 , 0 , 0 ,'b', 0 },
+                                               { 0 ,'r', 0 , 0 , 0 ,'b', 0 ,'b'},
+                                               {'r', 0 ,'r', 0 , 0 , 0 ,'b', 0 },
+                                               { 0 ,'r', 0 , 0 , 0 ,'b', 0 ,'b'},
+                                               {'r', 0 ,'r', 0 , 0 , 0 ,'b', 0 }};
 
 int ImageState::countRedKingsOnBoard() {
     int counter = 0;
@@ -446,6 +446,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
             moveList.push_back(move);
         }
     }
+    printBoardState(desiredBoard);
 }
 
 bool ImageState::findEmptySpotOffBoard(ImageMove& move, IncorrectSquare& s) {
@@ -612,4 +613,17 @@ bool ImageState::findPieceFromOffBoard(ImageMove& move, IncorrectSquare& s, char
 void ImageState::getSquareCoords(int& imageX, int& imageY, int squareX, int squareY) {
     imageX = squareX * avgSquareWidth + edgeX[0] + (avgSquareWidth/2);
     imageY = squareY * avgSquareHeight + edgeY[0] + (avgSquareHeight/2);
+}
+
+void printBoardState(const char boardState[8][8]) {
+    for(int i = 0; i < 8; i++) {
+        for(int j = 0; j < 8; j++) {
+            char print = boardState[j][i];
+            if(print == 0) {
+                print = '.';
+            }
+            std::cout << " " << print;
+        }
+        std::cout << "\n";
+    }
 }

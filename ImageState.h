@@ -96,4 +96,6 @@ class ImageState {
         void getSquareCoords(int& imageX, int& imageY, int squareX, int squareY);
 };
 
+void printBoardState(const char boardState[8][8]);
+
 #endif

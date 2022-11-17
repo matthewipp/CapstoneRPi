@@ -14,6 +14,7 @@
 #include "PieceRecognition.h"
 #include "FSM.h"
 #include "Comms.h"
+#include "ImageState.h"
 
 int testClusterizing(int argc, char** argv) {
     // Check arguments
@@ -168,7 +169,7 @@ int demoImageRecognition(int argc, char** argv) {
                 else {
                     std::cout << "Error Generating Board State\n";
                 }
-                std::cout << boardState.boardState << "\n";
+                printBoardState(boardState.boardState);
                 std::cout << "Was this the expected result (Y/n)?";
                 std::string response;
                 bool valid = false;
@@ -254,6 +255,6 @@ int main(int argc, char** argv) {
     //return testBoardAligner(argc, argv);
     //return testClusterizing(argc, argv);
     //return testBoardString(argc, argv);
-    //return demoImageRecognition(argc, argv);
-    return runCheckers(argc, argv);
+    return demoImageRecognition(argc, argv);
+    //return runCheckers(argc, argv);
 }
