@@ -152,6 +152,7 @@ void FSM::outputState() {
             break;
     }
     state = tempNextState;
+    std::cout << "Reached output state\n";
     return;
 }
 
