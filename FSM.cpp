@@ -53,7 +53,7 @@ void FSM::nextState() {
                 if(imgSuccess) {
                     bool boardSuccess = boardState.generateBoardstate(img, false);
                     std::cout << "Board Read Successfully\n";
-                    if(boardSuccess) {
+                    /*if(boardSuccess) {
                         boardState.createMoveList(moveList);
                         std::cout << "Move list created\n";
                         if(boardState.majorFault) {
@@ -70,7 +70,7 @@ void FSM::nextState() {
                     else {
                         sendFlags |= FLAG_SEND_MAJOR_FAULT;
                         tempNextState = WAIT_FOR_PLAYER;
-                    }
+                    }*/
                 }
                 else {
                     sendFlags |= FLAG_SEND_MAJOR_FAULT;
@@ -105,7 +105,7 @@ void FSM::nextState() {
                     else {
                         // Generate computer move
                         jimmy.gen_move(boardState.boardState);
-                        boardState.createMoveList(moveList, jimmy.board);
+                        /*boardState.createMoveList(moveList, jimmy.board);
                         if(boardState.majorFault) {
                             sendFlags |= FLAG_SEND_MAJOR_FAULT;
                             tempNextState = WAIT_FOR_PLAYER;
@@ -115,7 +115,7 @@ void FSM::nextState() {
                         }
                         else {
                             sendFlags |= FLAG_SEND_MOVE;
-                        }
+                        }*/
                     }
                 }
                 else {
