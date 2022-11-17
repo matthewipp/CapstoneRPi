@@ -112,7 +112,9 @@ void FSM::nextState() {
                                 flipped[j][i] = boardState.boardState[i][j];
                             }
                         }
+                        printBoardState(flipped);
                         jimmy.gen_move(flipped);
+                        printBoardState(jimmy.board);
                         tempNextState = WAIT_FOR_PLAYER;
                         /*boardState.createMoveList(moveList, jimmy.board);
                         if(boardState.majorFault) {
