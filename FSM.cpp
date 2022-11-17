@@ -174,7 +174,7 @@ void FSM::setOutput(char flags) {
     noMove.startX = 0;
     noMove.startY = 0;
     noMove.endX = 0;
-    noMove.startY = 0;
+    noMove.endY = 0;
     setOutput(flags, noMove);
 }
 
