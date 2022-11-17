@@ -132,6 +132,7 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters,
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
             boardState[i][j] = 0;
+            boardStatePointer[i][j] = nullptr;
         }
     }
     for(CheckersPiece& p : redPiecesOnBoard) {
