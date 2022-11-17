@@ -74,8 +74,15 @@ int main() {
     Bot g;
 
     // g.init_board();
-    g.init_board("0 0 0 0 0 0 b 0 0 0 0 0 0 0 0 b 0 0 0 0 0 0 0 0 0 0 0 0 0 r 0 0 0 0 b 0 0 0 0 0 0 B 0 r 0 0 0 b 0 0 r 0 0 0 b 0 0 r 0 r 0 b 0 0");
+    g.init_board("0 r 0 0 0 b 0 b r 0 r 0 0 0 b 0 0 r 0 0 0 b 0 b r 0 r 0 0 0 b 0 0 r 0 0 0 b 0 b r 0 r 0 0 0 b 0 0 r 0 0 0 b 0 b r 0 r 0 0 0 b 0");
+    
+    Bot q;
+
     std::cout << board_to_string(g.board) <<  std::endl;
+
+    std::cout << q.gen_move(g.board) << '\n';
+
+    std::cout << board_to_string(q.board) <<  std::endl;
 
     // while (!g.over()) {
     //     std::cout << g.move() << std::endl;
@@ -85,9 +92,9 @@ int main() {
 
     // std::cout << "Done" << std::endl;
 
-    std::cout << g.move() << std::endl;
+    // std::cout << g.move() << std::endl;
 
-    std::cout << board_to_string(g.board) <<  std::endl;
+    // std::cout << board_to_string(g.board) <<  std::endl;
 
     return 0;
 }
