@@ -108,7 +108,7 @@ void FSM::nextState() {
                         std::cout << "Generating Move\n";
                         printBoardState(boardState.boardState);
                         std::cout << "\n";
-                        jimmy.gen_move(boardState.boardState);
+                        std::cout << jimmy.gen_move(boardState.boardState) << '\n';
                         printBoardState(jimmy.board);
                         boardState.createMoveList(moveList, jimmy.board);
                         std::cout << "Moves to make: " << (int)moveList.size() << "\n";
