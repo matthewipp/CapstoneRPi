@@ -143,7 +143,7 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters,
             else {
                 boardState[coord.x][coord.y] = 'r';
             }
-            //proposedBoardStatePointer[coord.x][coord.y] = &p;
+            boardStatePointer[coord.x][coord.y] = &p;
         } 
         else {
             // Two pieces on same spot
@@ -163,7 +163,7 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters,
             else {
                 boardState[coord.x][coord.y] = 'b';
             }
-            //proposedBoardStatePointer[coord.x][coord.y] = &p;
+            boardStatePointer[coord.x][coord.y] = &p;
         } 
         else {
             // Two pieces on same spot
