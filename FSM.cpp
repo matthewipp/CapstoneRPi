@@ -90,7 +90,7 @@ void FSM::nextState() {
                     }
                     else if(!boardSuccess) {
                         // Go back to previous good board
-                        boardState.createMoveList(moveList);
+                        /*boardState.createMoveList(moveList);
                         if(boardState.majorFault) {
                             sendFlags |= FLAG_SEND_MAJOR_FAULT;
                             tempNextState = WAIT_FOR_PLAYER;
@@ -100,10 +100,12 @@ void FSM::nextState() {
                         }
                         else {
                             sendFlags |= FLAG_SEND_MOVE;
-                        }
+                        }*/
+                        std::cout << "Error reading board\n";
                     }
                     else {
                         // Generate computer move
+                        std::cout << "Generating Move\n";
                         jimmy.gen_move(boardState.boardState);
                         tempNextState = WAIT_FOR_PLAYER;
                         /*boardState.createMoveList(moveList, jimmy.board);
