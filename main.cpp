@@ -236,7 +236,7 @@ int runCheckers(int argc, char** argv) {
                 if(!calculating) {
                     calculating = true;
                     fsm.currentFlags = flags;
-                    std::cout << flags << std::endl;
+                    std::cout << (int)flags << std::endl;
                     //tCalc = std::thread(fsmLoop, std::ref(fsm), std::ref(calculating));
                     //tCalc.detach();
                     fsmLoop(fsm, calculating);
