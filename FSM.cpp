@@ -153,7 +153,6 @@ void FSM::outputState() {
             }
             break;
         case SEND_MOVES:
-            std::cout << (int)moveList.size() << "\n";
             if(moveList.size() > 0) {
                 setOutput(outputFlags, moveList.front());
                 moveList.pop_front();
@@ -161,7 +160,6 @@ void FSM::outputState() {
             break;
     }
     state = tempNextState;
-    std::cout << "Reached output state\n";
     return;
 }
 

@@ -390,6 +390,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
                         majorFault = true;
                         return;
                     }
+                    std::cout << "Removed piece first\n";
                     moveList.push_back(premove);
                 }
                 ImageMove move;
