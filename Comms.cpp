@@ -37,7 +37,7 @@ bool Comms::checkData(char& flags) {
     std::cout << "Enter simulated flags byte from the MSP430: ";
     std::cin >> data;
     flags = (char)data;
-    return true;
+    return (bool)data;
 }
 
 void Comms::sendData(char* message, int len) {
