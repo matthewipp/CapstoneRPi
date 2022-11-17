@@ -276,10 +276,10 @@ bool ImageState::alignCamera(cv::Mat& img) {
         avgSquareWidth *= -1;
     }
     // Extrapolate out to board edges, x and y from coordinates to board are switched
-    int lr1 = (int)(leftSum / cornerHeight);
-    int lr2 = (int)(rightSum / cornerHeight);
-    int tb1 = (int)(topSum / cornerWidth);
-    int tb2 = (int)(botSum / cornerWidth);
+    int lr1 = (int)(leftSum / cornerWidth);
+    int lr2 = (int)(rightSum / cornerWidth);
+    int tb1 = (int)(topSum / cornerHeight);
+    int tb2 = (int)(botSum / cornerHeight);
     if(lr1 < lr2) {
         edgeX[0] = lr1 - avgSquareWidth;
         edgeX[1] = lr2 + avgSquareWidth;
@@ -296,17 +296,16 @@ bool ImageState::alignCamera(cv::Mat& img) {
         edgeY[0] = tb2 - avgSquareHeight;
         edgeY[1] = tb1 + avgSquareHeight;
     }
-
     return true;
 }
 
 cv::Point2i ImageState::getBoardPos(CheckersPiece& p) {
     // Keep moving right or down until you get past the point
     cv::Point2i pos(0, 0);
-    while(p.x > edgeX[0] + (pos.x+1)*avgSquareWidth) {
+    while(p.imageX > edgeX[0] + (pos.x+1)*avgSquareWidth) {
         pos.x++;
     }
-    while(p.y > edgeY[0] + (pos.y+1)*avgSquareHeight) {
+    while(p.imageY > edgeY[0] + (pos.y+1)*avgSquareHeight) {
         pos.y++;
     }
     // Check distance, if too far, return -1
@@ -314,8 +313,8 @@ cv::Point2i ImageState::getBoardPos(CheckersPiece& p) {
     // Must be in the middle 3/5 of the board
     int minWidth = avgSquareWidth / 5;
     int minHeight = avgSquareHeight / 5;
-    int xDist = edgeX[0] + (pos.x+1)*avgSquareWidth - p.x;
-    int yDist = edgeY[0] + (pos.y+1)*avgSquareHeight - p.y;
+    int xDist = edgeX[0] + (pos.x+1)*avgSquareWidth - p.imageX;
+    int yDist = edgeY[0] + (pos.y+1)*avgSquareHeight - p.imageY;
     if(xDist < minWidth || xDist > minWidth * 4) {
         // Piece is close to a border
         pos.x = -1;
