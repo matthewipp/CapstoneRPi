@@ -214,7 +214,7 @@ int demoImageRecognition(int argc, char** argv) {
 
 void fsmLoop(FSM& fsm, volatile bool& calculating) {
     fsm.runThread();
-    std::cout << "Done thread";
+    std::cout << "Done thread\n";
     calculating = false;
 }
 
