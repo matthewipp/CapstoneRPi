@@ -328,7 +328,9 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
     // Setup
     majorFault = false;
     moveList.clear();
+    std::cout << "Desired:\n";
     printBoardState(desiredBoard);
+    std::cout << "Current:\n";
     printBoardState(boardState);
     std::vector<IncorrectSquare> shouldBeEmpty;
     std::vector<IncorrectSquare> shouldBeFilled;
@@ -359,7 +361,8 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
         }
     }
     std::cout << "Classified Incorrect Squares\n";
-    std::cout << (int)shouldBeEmpty.size() << std::endl;
+    std::cout << "Should be empty: " << (int)shouldBeEmpty.size() << std::endl;
+    std::cout << "Should be filled: " << (int)shouldBeFilled.size() << std::endl;
     // Match incorrect squares to pieces
     for(IncorrectSquare& s : shouldBeFilled) {
         bool shouldBeBlue = false;

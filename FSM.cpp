@@ -106,18 +106,11 @@ void FSM::nextState() {
                     else {
                         // Generate computer move
                         std::cout << "Generating Move\n";
-                        /*char flipped[8][8];
-                        for(int i = 0; i < 8; i++) {
-                            for(int j = 0; j < 8; j++) {
-                                flipped[j][i] = boardState.boardState[i][j];
-                            }
-                        }*/
                         printBoardState(boardState.boardState);
                         std::cout << "\n";
                         jimmy.gen_move(boardState.boardState);
                         printBoardState(jimmy.board);
-                        tempNextState = WAIT_FOR_PLAYER;
-                        /*boardState.createMoveList(moveList, jimmy.board);
+                        boardState.createMoveList(moveList, jimmy.board);
                         if(boardState.majorFault) {
                             sendFlags |= FLAG_SEND_MAJOR_FAULT;
                             tempNextState = WAIT_FOR_PLAYER;
@@ -127,7 +120,7 @@ void FSM::nextState() {
                         }
                         else {
                             sendFlags |= FLAG_SEND_MOVE;
-                        }*/
+                        }
                     }
                 }
                 else {
