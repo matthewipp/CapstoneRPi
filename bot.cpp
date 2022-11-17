@@ -1,6 +1,5 @@
 
 #include "bot.h"
-#include <cstring>
 
 /*
 Function for bot performing move
@@ -15,39 +14,44 @@ uint Bot::move() {
 }
 
 /*
-Function that takes board state and generates move
+Function that takes board state and generates move.
+Note: move is represented as an update to the board
+member variable
 */
-void Bot::gen_move(char b[8][8]) {
+uint Bot::gen_move(char b[8][8]) {
+    // Set the board state to match the argument
     this->set_board(b);
+    // Set Red to move
     this->color = true;
-    this->move();
+    // Generate the move
+    return this->move();
 }
 
 /*
 Function for applying Move to board
 */
-void Bot::apply_move(Move m) {
+void Bot::apply_move(Bot::Move m) {
     // Check if piece should be promoted and red
-    if (this->color && m.f[1] == 7 && !IS_CROWNED(this->board[m.s[0]][m.s[1]])) {
-        this->board[m.s[0]][m.s[1]] = 'R';
+    if (this->color && m.f.y == 7 && !IS_CROWNED(this->board[m.s.x][m.s.y])) {
+        this->board[m.s.x][m.s.y] = 'R';
     }
     // Check if piece should be promoted and blue
-    if (!this->color && m.f[1] == 0 && !IS_CROWNED(this->board[m.s[0]][m.s[1]])) {
-        this->board[m.s[0]][m.s[1]] = 'B';
+    if (!this->color && m.f.y == 0 && !IS_CROWNED(this->board[m.s.x][m.s.y])) {
+        this->board[m.s.x][m.s.y] = 'B';
     }
 
     if (!m.cap) {   // If the move is not a capture
-        this->board[m.f[0]][m.f[1]] = this->board[m.s[0]][m.s[1]];
-        this->board[m.s[0]][m.s[1]] = 0;
+        this->board[m.f.x][m.f.y] = this->board[m.s.x][m.s.y];
+        this->board[m.s.x][m.s.y] = 0;
         this->color = !this->color;
     } else {        // If the move is a capture
         if (this->color) 
             blue_count--;
         else 
             red_count--;
-        this->board[m.f[0]][m.f[1]] = this->board[m.s[0]][m.s[1]];
-        this->board[m.s[0]][m.s[1]] = 0;
-        this->board[(m.s[0]+m.f[0])>>1][(m.s[1]+m.f[1])>>1] = 0;
+        this->board[m.f.x][m.f.y] = this->board[m.s.x][m.s.y];
+        this->board[m.s.x][m.s.y] = 0;
+        this->board[(m.s.x+m.f.x)>>1][(m.s.y+m.f.y)>>1] = 0;
         this->color = m.t ? this->color : !this->color;
     }
 }
@@ -56,9 +60,12 @@ void Bot::apply_move(Move m) {
 Function to set the board state
 */
 void Bot::set_board(char b[8][8]) {
+    // Initialize red and blue piece counts
     this->red_count = this->blue_count = 0;
+    // Iterate through the board
     for (uchar x = 0; x < 8; x++) {
         for (uchar y = 0; y < 8; y++) {
+            // If there's a piece at this tile, increment the corresponding color count
             if (b[x][y] != 0) {
                 if (IS_RED(b[x][y])) {
                     this->red_count++;
@@ -66,6 +73,7 @@ void Bot::set_board(char b[8][8]) {
                     this->blue_count++;
                 }
             }
+            // Update the board member variable to match the argument
             this->board[x][y] = b[x][y];
         }
     }
@@ -75,82 +83,88 @@ void Bot::set_board(char b[8][8]) {
 Compares two 2D character arrays
 */
 bool Bot::board_equal(char b1[8][8], char b2[8][8]) {
+    // Iterate through every element
     for (uchar x = 0; x < 8; x++) {
         for (uchar y = 0; y < 8; y++) {
+            // If the elements do not match, return false
             if (b1[x][y] != b2[x][y]) {
                 return false;
             }
         }
     }
+    // If all elements match, return true
     return true;
 }
 
-State Bot::init_state(char b[8][8], bool cont, uchar p[2]) {
-    State ret;
-    std::memcpy(ret.b, b, sizeof(b));
-    ret.cont = cont;
-    std::memcpy(ret.p, p, sizeof(p));
-    return ret;
-}
-
-bool Bot::comp_boards(char bi[8][8], char bf[8][8]) {
-    std::vector<State> stack;
-    uchar p[2] = {0, 0};
-    State s = init_state(bi, false, p);
-    stack.push_back(s);
-    while (stack.size()) {
-        s = stack.back();
-        stack.pop_back();
-        this->set_board(s.b);
-        this->color = false;
-        for (Move m : this->moves()) {
-            this->apply_move(m);
-            if (this->board_equal(this->board, bf)) {
-                return true;
-            }
-            if (!this->color) {
-                return false;
-            }
-        }
-    }
-    return false;
+/*
+Function to initialize State struct
+*/
+void Bot::init_state(Bot::State * pS, char b[8][8], bool cont, Bot::Coord p) {
+    // Copy 8x8 char array
+    std::memcpy(pS->b, b, sizeof(b));
+    // Assign cont
+    pS->cont = cont;
+    // Copy uchar array
+    // std::memcpy(ret.p, p, sizeof(p));
+    pS->p = p;
 }
 
 /*
+Function to determine if bf is reachable from bi in a 
+single legal move.
+Note: one legal move can consist of multiple "Move" structs
+as long as they don't cede the turn.
+*/
 bool Bot::comp_boards(char bi[8][8], char bf[8][8]) {
-    std::vector<char[8][8]> stack;
-    char state[8][8];
+    // Prepare stack for depth first traversal
+    std::vector<Bot::State*> stack;
+    Bot::State * s = new State();
+    Bot::State * temp;
+    init_state(s, bi, false, {0, 0});
+    stack.push_back(s);
+
+    // Depth first traversal
     while (stack.size()) {
-        std::memcpy(state, stack.back(), sizeof(stack.back()));
+        // Get back element
+        s = stack.back();
         stack.pop_back();
-        this->set_board(state);
+        // Configure board state
+        this->set_board(s->b);
+        // Set as blue's turn
         this->color = false;
+        // Check each move that can be applied on this state
         for (Move m : this->moves()) {
+            // Try move
             this->apply_move(m);
+            // Check if end state has been reached
             if (this->board_equal(this->board, bf)) {
                 return true;
             }
+            // If move continues, add subsequent board state to stack
             if (!this->color) {
-                return false;
+                temp = new State();
+                init_state(temp, this->board, true, m.f);
+                stack.push_back(temp);
             }
         }
+        delete s;
     }
+    // If traversal completes, final state was unreachable
     return false;
 }
-*/
 
 /*
 Function for undoing previously applied Move (requires previous move as argument)
 */
-void Bot::undo_move(Move m) {
+void Bot::undo_move(Bot::Move m) {
     if (!m.cap) {   // If the move is not a capture
-        this->board[m.s[0]][m.s[1]] = m.pm;
-        this->board[m.f[0]][m.f[1]] = 0;
+        this->board[m.s.x][m.s.y] = m.pm;
+        this->board[m.f.x][m.f.y] = 0;
         this->color = !this->color;
     } else {        // If the move is a capture
-        this->board[m.s[0]][m.s[1]] = m.pm;
-        this->board[m.f[0]][m.f[1]] = 0;
-        this->board[(m.s[0]+m.f[0])>>1][(m.s[1]+m.f[1])>>1] = m.pe;
+        this->board[m.s.x][m.s.y] = m.pm;
+        this->board[m.f.x][m.f.y] = 0;
+        this->board[(m.s.x+m.f.x)>>1][(m.s.y+m.f.y)>>1] = m.pe;
         this->color = m.t ? this->color : !this->color;
         if (this->color)
             blue_count++;
@@ -176,7 +190,7 @@ int min(int a, int b) {
 /*
 Function calculates algorithms chosen move
 */
-Move Bot::calc_move(uchar depth, int alpha, int beta) {
+Bot::Move Bot::calc_move(uchar depth, int alpha, int beta) {
     int best_value;
     int value;
     Move best_move;
@@ -324,44 +338,7 @@ void Bot::init_board(std::string bState) {
     }
 }
 
-/*
-
-bool Bot::checkMoves(char p, char dir, bool can_cap, uchar x, uchar y, Move ret[], bool cont = true) {
-    char ind = 0;
-    bool retFlag = false;
-
-    for (char yDiff = -1; yDiff <= 1; yDiff += 2) {
-        if (diff > dir + 1 || diff < dir - 1) 
-            continue;
-        for (char xDiff = -1; xDiff <= 1; xDiff += 2) {
-            if (!can_cap) {
-                if (y + yDiff <= 7 && y + yDiff >= 0) {
-                    if (x + xDiff <= 7 && x + xDiff >= 0) {
-                        if (board[x+xDiff][y+diff] == 0) {
-                            ret[ind] = {{x, y}, {x+xDiff, y+yDiff}, p, false, 0, false};
-                            retFlag = true;
-                        }
-                    }
-                }
-            }
-            if (y + (yDiff<<1) <= 7 && y + (yDiff<<1) >= 0) {
-                if (x + (xDiff<<1) <= 7 && x + (xDiff<<1) >= 0) {
-                    if (board[x+xDiff][y+yDiff] != 0 && IS_RED(board[x+xDiff][y+yDiff]) != IS_RED(p)) {
-                        if (board[x+(xDiff<<1)][y+(yDiff<<1)] == 0) {
-                            ret[ind] = {{x, y}, {x+(xDiff<<1), y+(yDiff<<1)}, p, false, 0, false};
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-*/
-
 bool Bot::checkMoves(char p, char dir, uchar x, uchar y) {
-    char ind = 0;
-    bool retFlag = false;
 
     for (char yDiff = -1; yDiff <= 1; yDiff += 2) {
         if (yDiff > dir + 1 || yDiff < dir - 1) 
@@ -384,7 +361,7 @@ bool Bot::checkMoves(char p, char dir, uchar x, uchar y) {
 /*
 Calculates list of legal moves from current board state
 */
-std::vector<Move> Bot::moves() {
+std::vector<Bot::Move> Bot::moves() {
     
     // Tracks which direction piece can move (along y-axis)
     char dir;
@@ -411,6 +388,39 @@ std::vector<Move> Bot::moves() {
             else
                 dir = this->color ? RED_DIR : BLUE_DIR;
             
+            for (char yDiff = -1; yDiff <= 1; yDiff += 2) {
+                if (yDiff > dir + 1 || yDiff < dir - 1) 
+                    continue;
+                for (char xDiff = -1; xDiff <= 1; xDiff += 2) {
+                    if (y + (yDiff<<1) <= 7 && y + (yDiff<<1) >= 0) {
+                        if (x + (xDiff<<1) <= 7 && x + (xDiff<<1) >= 0) {
+                            if (board[x+xDiff][y+yDiff] != 0 && IS_RED(board[x+xDiff][y+yDiff]) != IS_RED(board[x][y])) {
+                                if (board[x+(xDiff<<1)][y+(yDiff<<1)] == 0) {
+                                    if (!can_cap) {
+                                        can_cap = true;
+                                        ret.clear();
+                                    }
+                                    ret.push_back({{x, y}, {(uchar)(x+(xDiff<<1)), (uchar)(y+(yDiff<<1))}, 
+                                                    board[x][y], true, board[x+xDiff][y+yDiff], 
+                                                    checkMoves(board[x][y], dir, x+(xDiff<<1), y+(yDiff<<1))});
+                                }
+                            }
+                        }
+                    }
+                    if (!can_cap) {
+                        if (x + xDiff <= 7 && x + xDiff >= 0) {
+                            if (y + yDiff <= 7 && y + yDiff >= 0) {
+                                if (board[x+xDiff][y+yDiff] == 0) {
+                                    ret.push_back({{x, y}, {(uchar)(x+xDiff), (uchar)(y+yDiff)}, 
+                                                board[x][y], false, 0, false});
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            /*
             // If it is capable of moving in -y direction, check for potential moves in that direction
             if (dir < 1) {
                 // Ensure that it has room to move in the -y direction
@@ -477,6 +487,7 @@ std::vector<Move> Bot::moves() {
                     }
                 }
             }
+            */
         }
     }
 
