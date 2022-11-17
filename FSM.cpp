@@ -16,12 +16,12 @@
 
 FSM::FSM() {
     state = WAIT_FOR_PLAYER;
+    tempNextState = WAIT_FOR_PLAYER;
     currentFlags = 0;
     dataSent = true;
 }
 
 void FSM::nextState() {
-    state = tempNextState;
     char sendFlags = 0;
     switch(state) {
         case WAIT_FOR_PLAYER:
@@ -146,6 +146,7 @@ void FSM::outputState() {
             moveList.pop_front();
             break;
     }
+    state = tempNextState;
     return;
 }
 
