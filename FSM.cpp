@@ -105,6 +105,7 @@ void FSM::nextState() {
                     else {
                         // Generate computer move
                         jimmy.gen_move(boardState.boardState);
+                        tempNextState = WAIT_FOR_PLAYER;
                         /*boardState.createMoveList(moveList, jimmy.board);
                         if(boardState.majorFault) {
                             sendFlags |= FLAG_SEND_MAJOR_FAULT;
@@ -147,7 +148,6 @@ void FSM::outputState() {
             }
             break;
         case SEND_MOVES:
-            std::cout << "hello\n";
             setOutput(outputFlags, moveList.front());
             moveList.pop_front();
             break;
