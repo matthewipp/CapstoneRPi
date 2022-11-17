@@ -197,7 +197,7 @@ Move Bot::calc_move(uchar depth, int alpha, int beta) {
             this->apply_move(move);
             value = this->alpha_beta(depth, alpha, beta);
             this->undo_move(move);
-            if (value =< best_value) {
+            if (value <= best_value) {
                 best_move = move;
                 best_value = value;
             }
