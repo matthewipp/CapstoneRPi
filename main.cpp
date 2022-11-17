@@ -255,6 +255,6 @@ int main(int argc, char** argv) {
     //return testBoardAligner(argc, argv);
     //return testClusterizing(argc, argv);
     //return testBoardString(argc, argv);
-    return demoImageRecognition(argc, argv);
-    //return runCheckers(argc, argv);
+    //return demoImageRecognition(argc, argv);
+    return runCheckers(argc, argv);
 }
