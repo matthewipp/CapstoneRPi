@@ -214,7 +214,6 @@ int demoImageRecognition(int argc, char** argv) {
 
 void fsmLoop(FSM& fsm, volatile bool& calculating) {
     fsm.runThread();
-    std::cout << "Done thread\n";
     calculating = false;
 }
 
@@ -236,7 +235,6 @@ int runCheckers(int argc, char** argv) {
                 if(!calculating) {
                     calculating = true;
                     fsm.currentFlags = flags;
-                    std::cout << (int)flags << std::endl;
                     //tCalc = std::thread(fsmLoop, std::ref(fsm), std::ref(calculating));
                     //tCalc.detach();
                     fsmLoop(fsm, calculating);
