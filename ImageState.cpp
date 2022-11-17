@@ -118,7 +118,7 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters,
         cp.isBlue = true;
         cp.isKing = c.isKing;
         cp.imageX = c.x;
-        cp.imageX = c.y;
+        cp.imageY = c.y;
         cp.x = -1;
         cp.y = -1;
         cp.onBoard = edgeX[0] < cp.imageX && cp.imageX < edgeX[1] && edgeY[0] < cp.imageY && cp.imageY < edgeY[1];
@@ -403,7 +403,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
                 std::cout << "Move from (";
                 std::cout << sTarget.x << ", " << sTarget.y;
                 std::cout << ") to (" << s.x << ", " << s.y << ") -> ";
-                std::cout << "(" << move.startX << ", " << move.endY;
+                std::cout << "(" << move.startX << ", " << move.startY;
                 std::cout << ") to (" << move.endX << ", " << move.endY << "\n";
                 moveList.push_back(move);
                 break;
