@@ -37,6 +37,9 @@ void FSM::nextState() {
                     if(!boardSuccess) {
                         sendFlags |= FLAG_SEND_MAJOR_FAULT;
                     }
+                    else {
+                        std::cout << "Image Aligned SUccessfully\n";
+                    }
                 }
                 else {
                     sendFlags |= FLAG_SEND_MAJOR_FAULT;
