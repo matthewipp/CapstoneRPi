@@ -80,6 +80,7 @@ bool ImageState::generateBoardstate(cv::Mat& img, bool checkLegalMove) {
     isValidState = valid;
     // check if the move was legal here
     bool wasLegalMove = true;
+    //bool wasLegalMove = comp_boards(lastValidBoardState, boardState);
     if(!majorFault && (valid && wasLegalMove || !checkLegalMove)) {
         std::memcpy(lastValidBoardState, boardState, sizeof(boardState));
         return true;

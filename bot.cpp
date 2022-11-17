@@ -92,9 +92,9 @@ bool Bot::comp_boards(char bi[8][8], char bf[8][8]) {
     std::vector<char[8][8]> stack;
     char state[8][8];
     while (stack.size()) {
-        state = stack.back();
+        std::memcpy(state, stack.back(), sizeof(stack.back()));
         stack.pop_back();
-        this->init_board(state);
+        this->set_board(state);
         this->color = false;
         for (Move m : this->moves()) {
             this->apply_move(m);
@@ -389,10 +389,10 @@ std::vector<Move> Bot::moves() {
                     if (!can_cap) {
                         // Check if diagonal-adjacent tiles are empty
                         if (x < 7 && (board[x+1][y-1] == 0)) {
-                            ret.push_back({{x, y}, {x+1, y-1}, board[x][y], false, 0, false});
+                            ret.push_back({{x, y}, {(uchar)(x+1), (uchar)(y-1)}, board[x][y], false, 0, false});
                         }
                         if (x > 0 && (board[x-1][y-1] == 0)) {
-                            ret.push_back({{x, y}, {x-1, y-1}, board[x][y], false, 0, false});
+                            ret.push_back({{x, y}, {(uchar)(x-1), (uchar)(y-1)}, board[x][y], false, 0, false});
                         }
                     }
                     // Capturing requires more space
@@ -404,14 +404,14 @@ std::vector<Move> Bot::moves() {
                                 can_cap = true;
                                 ret.clear();
                             }
-                            ret.push_back({{x, y}, {x+2, y-2}, board[x][y], true, board[x+1][y-1], checkMoves(board[x][y], dir, x+2, y-2)});
+                            ret.push_back({{x, y}, {(uchar)(x+2), (uchar)(y-2)}, board[x][y], true, board[x+1][y-1], checkMoves(board[x][y], dir, x+2, y-2)});
                         }
                         if (x > 1 && board[x-1][y-1] != 0 && IS_RED(board[x-1][y-1]) != this->color && board[x-2][y-2] == 0) {
                             if (!can_cap) {
                                 can_cap = true;
                                 ret.clear();
                             }
-                            ret.push_back({{x, y}, {x-2, y-2}, board[x][y], true, board[x-1][y-1], checkMoves(board[x][y], dir, x-2, y-2)});
+                            ret.push_back({{x, y}, {(uchar)(x-2), (uchar)(y-2)}, board[x][y], true, board[x-1][y-1], checkMoves(board[x][y], dir, x-2, y-2)});
                         }
                     }
                 }
@@ -423,10 +423,10 @@ std::vector<Move> Bot::moves() {
                 if (y < 7) {
                     if (!can_cap) {
                         if (x < 7 && (board[x+1][y+1] == 0)) {
-                            ret.push_back({{x, y}, {x+1, y+1}, board[x][y], false, 0, false});
+                            ret.push_back({{x, y}, {(uchar)(x+1), (uchar)(y+1)}, board[x][y], false, 0, false});
                         }
                         if (x > 0 && (board[x-1][y+1] == 0)) {
-                            ret.push_back({{x, y}, {x-1, y+1}, board[x][y], false, 0, false});
+                            ret.push_back({{x, y}, {(uchar)(x-1), (uchar)(y+1)}, board[x][y], false, 0, false});
                         }
                     }
                     if (y < 6) {
@@ -435,14 +435,14 @@ std::vector<Move> Bot::moves() {
                                 can_cap = true;
                                 ret.clear();
                             }
-                            ret.push_back({{x, y}, {x+2, y+2}, board[x][y], true, board[x+1][y+1], checkMoves(board[x][y], dir, x+2, y+2)});
+                            ret.push_back({{x, y}, {(uchar)(x+2), (uchar)(y+2)}, board[x][y], true, board[x+1][y+1], checkMoves(board[x][y], dir, x+2, y+2)});
                         }
                         if (x > 1 && board[x-1][y+1] != 0 && IS_RED(board[x-1][y+1]) != this->color && board[x-2][y+2] == 0) {
                             if (!can_cap) {
                                 can_cap = true;
                                 ret.clear();
                             }
-                            ret.push_back({{x, y}, {x-2, y+2}, board[x][y], true, board[x-1][y+1], checkMoves(board[x][y], dir, x-2, y+2)});
+                            ret.push_back({{x, y}, {(uchar)(x-2), (uchar)(y+2)}, board[x][y], true, board[x-1][y+1], checkMoves(board[x][y], dir, x-2, y+2)});
                         }
                     }
                 }

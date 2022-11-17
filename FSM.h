@@ -29,6 +29,7 @@ enum FSMState {WAIT_FOR_PLAYER, SEND_MOVES};
 #define FLAG_SEND_ILLEGAL_MOVE 0x10
 
 #include "ImageState.h"
+#include "bot.h"
 
 class FSM {
     public:
@@ -44,6 +45,7 @@ class FSM {
         int outputLength;
         std::list<ImageMove> moveList;
         bool dataSent;
+        Bot jimmy;
     private:
         // Calculates the next state
         void nextState();

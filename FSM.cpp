@@ -12,6 +12,7 @@
 #include "FSM.h"
 #include "ImageState.h"
 #include "PieceRecognition.h"
+#include "bot.h"
 
 FSM::FSM() {
     state = WAIT_FOR_PLAYER;
@@ -98,8 +99,8 @@ void FSM::nextState() {
                     }
                     else {
                         // Generate computer move
-                        char desiredBoardState[8][8];
-                        boardState.createMoveList(moveList, desiredBoardState);
+                        jimmy.gen_move(boardState.boardState);
+                        boardState.createMoveList(moveList, jimmy.board);
                         if(boardState.majorFault) {
                             sendFlags |= FLAG_SEND_MAJOR_FAULT;
                             tempNextState = WAIT_FOR_PLAYER;
