@@ -147,6 +147,7 @@ void FSM::outputState() {
             }
             break;
         case SEND_MOVES:
+            std::cout << "hello\n";
             setOutput(outputFlags, moveList.front());
             moveList.pop_front();
             break;
@@ -164,6 +165,10 @@ void FSM::runThread() {
 
 void FSM::setOutput(char flags) {
     ImageMove noMove;
+    noMove.startX = 0;
+    noMove.startY = 0;
+    noMove.endX = 0;
+    noMove.startY = 0;
     setOutput(flags, noMove);
 }
 
