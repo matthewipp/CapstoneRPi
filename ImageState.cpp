@@ -106,7 +106,7 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters,
         cp.imageY = c.y;
         cp.x = -1;
         cp.y = -1;
-        cp.onBoard = edgeX[0] < cp.x && cp.x < edgeX[1] && edgeY[0] < cp.y && cp.y < edgeY[1];
+        cp.onBoard = edgeX[0] < cp.imageX && cp.imageX < edgeX[1] && edgeY[0] < cp.imageY && cp.imageY < edgeY[1];
         if(cp.onBoard)
             redPiecesOnBoard.push_back(cp);
         else
@@ -121,7 +121,7 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters,
         cp.imageX = c.y;
         cp.x = -1;
         cp.y = -1;
-        cp.onBoard = edgeX[0] < cp.x && cp.x < edgeX[1] && edgeY[0] < cp.y && cp.y < edgeY[1];
+        cp.onBoard = edgeX[0] < cp.imageX && cp.imageX < edgeX[1] && edgeY[0] < cp.imageY && cp.imageY < edgeY[1];
         if(cp.onBoard)
             bluePiecesOnBoard.push_back(cp);
         else
@@ -296,8 +296,6 @@ bool ImageState::alignCamera(cv::Mat& img) {
         edgeY[0] = tb2 - avgSquareHeight;
         edgeY[1] = tb1 + avgSquareHeight;
     }
-    std::cout << edgeX[0] << ", " << edgeX[1] << "\n";
-    std::cout << edgeY[0] << ", " << edgeY[1] << "\n";
     return true;
 }
 
