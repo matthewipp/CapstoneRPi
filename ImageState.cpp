@@ -395,7 +395,9 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
                 getSquareCoords(move.endX, move.endY, s.x, s.y);
                 std::cout << "Move from (";
                 std::cout << sTarget.x << ", " << sTarget.y;
-                std::cout << ") to (" << s.x << ", " << s.y << ")\n";
+                std::cout << ") to (" << s.x << ", " << s.y << ") -> ";
+                std::cout << "(" << move.startX << ", " << move.endY;
+                std::cout << ") to (" << move.endX << ", " << move.endY << "\n";
                 moveList.push_back(move);
                 break;
             }
