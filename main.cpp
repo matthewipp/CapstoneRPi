@@ -240,7 +240,7 @@ int runCheckers(int argc, char** argv) {
                 }
             }
             else {
-                if(!calculating) {
+                if(!calculating && !fsm.dataSent) {
                     uart.sendData(fsm.currentOutput, fsm.outputLength);
                 }
             }

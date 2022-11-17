@@ -170,4 +170,5 @@ void FSM::setOutput(char flags, ImageMove& move) {
     currentOutput[8] = (char)(move.endX);
     currentOutput[9] = (char)(move.endY >> 8);
     currentOutput[10] = (char)(move.endY);
+    dataSent = false;
 }
