@@ -328,6 +328,8 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
     // Setup
     majorFault = false;
     moveList.clear();
+    printBoardState(desiredBoard);
+    printBoardState(boardState);
     std::vector<IncorrectSquare> shouldBeEmpty;
     std::vector<IncorrectSquare> shouldBeFilled;
     std::vector<CheckersPiece*> matchedPieces;
