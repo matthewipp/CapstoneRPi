@@ -39,6 +39,10 @@ public:
     void undo_move(Move);
     Move calc_move(uchar, int, int);
     bool checkMoves(char, char, uchar, uchar);
+    void set_board(char b[8][8]);
+    void gen_move(char b[8][8]);
+    bool board_equal(char b1[8][8], char b2[8][8]);
+    bool comp_boards(char bi[8][8], char bf[8][8]);
     
 };
 

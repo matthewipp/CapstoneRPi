@@ -14,6 +14,15 @@ uint Bot::move() {
 }
 
 /*
+Function that takes board state and generates move
+*/
+void Bot::gen_move(char b[8][8]) {
+    this->set_board(b);
+    this->color = true;
+    this->move();
+}
+
+/*
 Function for applying Move to board
 */
 void Bot::apply_move(Move m) {
@@ -40,6 +49,64 @@ void Bot::apply_move(Move m) {
         this->board[(m.s[0]+m.f[0])>>1][(m.s[1]+m.f[1])>>1] = 0;
         this->color = m.t ? this->color : !this->color;
     }
+}
+
+/*
+Function to set the board state
+*/
+void Bot::set_board(char b[8][8]) {
+    this->red_count = this->blue_count = 0;
+    for (uchar x = 0; x < 8; x++) {
+        for (uchar y = 0; y < 8; y++) {
+            if (b[x][y] != 0) {
+                if (IS_RED(b[x][y])) {
+                    this->red_count++;
+                } else {
+                    this->blue_count++;
+                }
+            }
+            this->board[x][y] = b[x][y];
+        }
+    }
+}
+
+/*
+Compares two 2D character arrays
+*/
+bool Bot::board_equal(char b1[8][8], char b2[8][8]) {
+    for (uchar x = 0; x < 8; x++) {
+        for (uchar y = 0; y < 8; y++) {
+            if (b1[x][y] != b2[x][y]) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+/*
+Function to compare two boards to determine if one can be reached via the other with a single
+legal move
+*/
+bool Bot::comp_boards(char bi[8][8], char bf[8][8]) {
+    std::vector<char[8][8]> stack;
+    char state[8][8];
+    while (stack.size()) {
+        state = stack.back();
+        stack.pop_back();
+        this->init_board(state);
+        this->color = false;
+        for (Move m : this->moves()) {
+            this->apply_move(m);
+            if (this->board_equal(this->board, bf)) {
+                return true;
+            }
+            if (!this->color) {
+                return false;
+            }
+        }
+    }
+    return false;
 }
 
 /*
@@ -225,7 +292,6 @@ void Bot::init_board(std::string bState) {
             }
         }
     }
-
 }
 
 /*
