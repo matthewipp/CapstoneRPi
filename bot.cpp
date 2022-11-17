@@ -23,6 +23,7 @@ uint Bot::gen_move(char b[8][8]) {
     this->set_board(b);
     // Set Red to move
     this->color = true;
+    std::cout << "Number of legal moves: " << this->moves().size() << std::endl;
     // Generate the move
     return this->move();
 }
