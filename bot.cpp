@@ -85,7 +85,7 @@ bool Bot::board_equal(char b1[8][8], char b2[8][8]) {
     return true;
 }
 
-State init_state(char b[8][8], bool cont, uchar p[2]) {
+State Bot::init_state(char b[8][8], bool cont, uchar p[2]) {
     State ret;
     std::memcpy(ret.b, b, sizeof(b));
     ret.cont = cont;
