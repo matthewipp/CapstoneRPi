@@ -1,5 +1,6 @@
 
 #include "bot.h"
+#include <string>
 
 /*
 Function for bot performing move
