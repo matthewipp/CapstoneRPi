@@ -273,20 +273,20 @@ bool ImageState::alignCamera(cv::Mat& img) {
     int tb1 = (int)(topSum / cornerWidth);
     int tb2 = (int)(botSum / cornerWidth);
     if(lr1 < lr2) {
-        edgeY[0] = lr1 - avgSquareWidth;
-        edgeY[1] = lr2 + avgSquareWidth;
+        edgeX[0] = lr1 - avgSquareWidth;
+        edgeX[1] = lr2 + avgSquareWidth;
     }
     else {
-        edgeY[0] = lr2 - avgSquareWidth;
-        edgeY[1] = lr1 + avgSquareWidth;
+        edgeX[0] = lr2 - avgSquareWidth;
+        edgeX[1] = lr1 + avgSquareWidth;
     }
     if(tb1 < tb2) {
-        edgeX[0] = tb1 - avgSquareHeight;
-        edgeX[1] = tb2 + avgSquareHeight;
+        edgeY[0] = tb1 - avgSquareHeight;
+        edgeY[1] = tb2 + avgSquareHeight;
     }
     else {
-        edgeX[0] = tb2 - avgSquareHeight;
-        edgeX[1] = tb1 + avgSquareHeight;
+        edgeY[0] = tb2 - avgSquareHeight;
+        edgeY[1] = tb1 + avgSquareHeight;
     }
 
     return true;
