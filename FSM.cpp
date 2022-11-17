@@ -6,103 +6,148 @@
  * @date 2022-11-03
  */
 
+#include <iostream>
+#include <list>
+#include <opencv2/opencv.hpp>
 #include "FSM.h"
 #include "ImageState.h"
+#include "PieceRecognition.h"
 
-FSM::FSM(bool playerFirst) {
-    playerMove = playerFirst;
-    inGame = false;
+FSM::FSM() {
     state = WAIT_FOR_PLAYER;
     currentFlags = 0;
+    dataSent = true;
 }
 
 void FSM::nextState() {
-    currentFlags = 0;
+    state = tempNextState;
+    char sendFlags = 0;
     switch(state) {
         case WAIT_FOR_PLAYER:
-            if(currentFlags & FLAG_HOME) {
-                currentFlags |= FLAG_FORCE_HOME;
-                tempNextState = WAIT_FOR_COMPLETION;
+            if(currentFlags & FLAG_RECV_NONE) {
+                std::cout << "No flags received\n";
             }
-            if(currentFlags & FLAG_ALIGN) {
-                currentFlags |= FLAG_HOME | FLAG_ALIGN;
-                tempNextState = WAIT_FOR_COMPLETION;
+            else if(currentFlags & FLAG_RECV_ALIGN) {
+                std::cout << "Aligning\n";
+                cv::Mat img;
+                bool imgSuccess = takePicture(img);
+                if(imgSuccess) {
+                    bool boardSuccess = boardState.alignCamera(img);
+                    if(!boardSuccess) {
+                        sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                    }
+                }
+                else {
+                    sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                }
             }
-            if(currentFlags & FLAG_START_GAME) {
-                currentFlags |= FLAG_HOME | FLAG_ALIGN;
-                tempNextState = START_GAME;
+            else if(currentFlags & FLAG_RECV_START) {
+                std::cout << "Starting new game\n";
+                tempNextState = SEND_MOVES;
+                cv::Mat img;
+                bool imgSuccess = takePicture(img);
+                if(imgSuccess) {
+                    bool boardSuccess = boardState.generateBoardstate(img, false);
+                    if(boardSuccess) {
+                        boardState.createMoveList(moveList);
+                        if(boardState.majorFault) {
+                            sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                            tempNextState = WAIT_FOR_PLAYER;
+                        }
+                        else if(moveList.size() == 0) {
+                            tempNextState = WAIT_FOR_PLAYER;
+                        }
+                        else {
+                            sendFlags |= FLAG_SEND_MOVE;
+                        }
+                    }
+                    else {
+                        sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                        tempNextState = WAIT_FOR_PLAYER;
+                    }
+                }
+                else {
+                    sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                    tempNextState = WAIT_FOR_PLAYER;
+                }
             }
-            if(currentFlags & MAKE_MOVE) {
-                currentFlags |= FLAG_HOME | FLAG_ALIGN;
-                tempNextState = MAKE_MOVE;
-            }
-            if(currentFlags == 0) {
-                // Should not get here
-                currentFlags = FLAG_ERROR;
-                tempNextState = WAIT_FOR_COMPLETION;
+            else if(currentFlags & FLAG_RECV_PLAYER_MOVE) {
+                // Bot makes next move
+                tempNextState = SEND_MOVES;
+                cv::Mat img;
+                bool imgSuccess = takePicture(img);
+                if(imgSuccess) {
+                    bool boardSuccess = boardState.generateBoardstate(img);
+                    if(boardState.majorFault) {
+                        // Big uh oh do nothing
+                        sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                    }
+                    else if(!boardSuccess) {
+                        // Go back to previous good board
+                        boardState.createMoveList(moveList);
+                        if(boardState.majorFault) {
+                            sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                            tempNextState = WAIT_FOR_PLAYER;
+                        }
+                        else if(moveList.size() == 0) {
+                            tempNextState = WAIT_FOR_PLAYER;
+                        }
+                        else {
+                            sendFlags |= FLAG_SEND_MOVE;
+                        }
+                    }
+                    else {
+                        // Generate computer move
+                        char desiredBoardState[8][8];
+                        boardState.createMoveList(moveList, desiredBoardState);
+                        if(boardState.majorFault) {
+                            sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                            tempNextState = WAIT_FOR_PLAYER;
+                        }
+                        else if(moveList.size() == 0) {
+                            tempNextState = WAIT_FOR_PLAYER;
+                        }
+                        else {
+                            sendFlags |= FLAG_SEND_MOVE;
+                        }
+                    }
+                }
+                else {
+                    sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                }
             }
             break;
-        case START_GAME:
-        case MAKE_MOVE:
-            // Should not get here
-            currentFlags = FLAG_ERROR;
-            tempNextState = WAIT_FOR_PLAYER;
-            break;
-        case WAIT_FOR_COMPLETION:
-            if(FLAG_DONE_TASK) {
-                tempNextState = WAIT_FOR_PLAYER;
+        case SEND_MOVES:
+            if(currentFlags & FLAG_RECV_DONE) {
+                if(moveList.size() == 0) {
+                    sendFlags |= FLAG_SEND_WAIT_HOME;
+                    tempNextState = WAIT_FOR_PLAYER;
+                }
+                else {
+                    // Send the next move
+                    sendFlags |= FLAG_SEND_MOVE;
+                }
             }
             break;
     }
+    outputFlags = sendFlags;
 }
 
-char* FSM::outputState(int& length) {
-    char* output = nullptr;
+void FSM::outputState() {
     switch(tempNextState) {
-        case WAIT_FOR_COMPLETION:
-            // Only flags, no arguments
-            output = new char[1];
-            output[0] = (char)currentFlags;
+        case WAIT_FOR_PLAYER:
+            setOutput(outputFlags);
             break;
-        case START_GAME:
-        case MAKE_MOVE:
-            std::vector<ImageMove> moves;
-            if(tempNextState == START_GAME)
-                boardState.createMoveList(moves);
-            else {
-                // calculate next move
-                //char desiredBoardState[8][8];
-                //engine.makeMove(boardState.boardState, desiredBoardState);
-                //boardState.createMoveList(moves, desiredBoardState);
-            }
-            // 8 bytes per move (2 bytes per value, 4 values)
-            size_t messageLength = 1 + 8 * moves.size();
-            output = new char[messageLength];
-            output[0] = (char)currentFlags;
-            for(int i = 0; i < moves.size(); i++) {
-                // startX
-                output[1+8*i] = (char)(moves[i].startX);
-                output[1+8*i+1] = (char)(moves[i].startX >> 8);
-                // startY
-                output[1+8*i+2] = (char)(moves[i].startY);
-                output[1+8*i+3] = (char)(moves[i].startY >> 8);
-                // endX
-                output[1+8*i+4] = (char)(moves[i].endX);
-                output[1+8*i+5] = (char)(moves[i].endX >> 8);
-                // endY
-                output[1+8*i+6] = (char)(moves[i].endY);
-                output[1+8*i+7] = (char)(moves[i].endY >> 8);
-            }
+        case SEND_MOVES:
+            setOutput(outputFlags, moveList.front());
+            moveList.pop_front();
             break;
     }
-    return output;
+    return;
 }
 
-char* FSM::runThread(char* flags, int& outputLen) {
-    // update flags
-    currentFlags = (int)(*flags);
+void FSM::runThread() {
     // update state
     nextState();
-    char* output = outputState(outputLen);
-    return output;
+    outputState();
 }

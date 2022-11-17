@@ -106,7 +106,7 @@ int testBoardString(int argc, char** argv) {
     }
     std::cout << "Aligned Successfully!\n";
     // Get board state
-    bool majorFault;
+    bool majorFault = false;
     bool yay = boardState.generateBoardstate(stateImg, majorFault);
     if(yay) {
         std::cout << "Successfully imaged board: \n";
@@ -211,43 +211,37 @@ int demoImageRecognition(int argc, char** argv) {
     return 0;
 }
 
-void fsmLoop(FSM& fsm, char* sentData, int sentDataLen, char*& returnData, int& returnDataLen, bool& calculating) {
-    returnData = fsm.runThread(sentData, returnDataLen);
+void fsmLoop(FSM& fsm, volatile bool& calculating) {
+    fsm.runThread();
     calculating = false;
 }
 
 int runCheckers(int argc, char** argv) {
     volatile bool calculating = false;
-    FSM fsm(true);
+    FSM fsm;
     Comms uart;
     std::thread tCalc;
     // main loop
     while(true) {
         // UART
-        char* flags;
-        char* returnData;
-        int returnDataLen;
-        int flagsLen;
+        char flags;
         bool newData;
         std::thread tCalc;
         if(uart.isConnected()) {
-            newData = uart.checkData(flags, flagsLen);
+            newData = uart.checkData(flags);
             // Run FSM if new data received
-            if(newData && returnData == nullptr) {
+            if(newData) {
                 if(!calculating) {
                     calculating = true;
-                    tCalc = std::thread(fsmLoop, std::ref(fsm), flags, flagsLen, 
-                                        std::ref(returnData), std::ref(returnDataLen), 
-                                        std::ref(calculating));
+                    fsm.currentFlags = flags;
+                    tCalc = std::thread(fsmLoop, std::ref(fsm), std::ref(calculating));
                 }
             }
             else {
                 if(!calculating) {
-                    uart.sendData(returnData, returnDataLen);
-                    delete[] returnData;
+                    uart.sendData(fsm.currentOutput, fsm.outputLength);
                 }
             }
-            delete[] flags;
         }
         else {
             uart.openConnection();

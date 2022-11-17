@@ -19,7 +19,7 @@ class Comms {
         int getFD();
         bool openConnection();
         bool closeConnection();
-        bool checkData(char*& flags, int& len);
+        bool checkData(char& flags);
         void sendData(char* message, int len);
         void flush();
     private:

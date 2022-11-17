@@ -9,35 +9,50 @@
 #ifndef FSM_H
 #define FSM_H
 
-enum FSMState {WAIT_FOR_PLAYER, START_GAME, MAKE_MOVE, WAIT_FOR_COMPLETION};
+#include "ImageState.h"
 
-#define FLAG_NOTHING 0x00
-#define FLAG_HOME 0x01
-#define FLAG_ALIGN 0x02
-#define FLAG_START_GAME 0x04
-#define FLAG_MAKE_MOVE 0x08
-#define FLAG_DONE_TASK 0x10
-#define FLAG_FORCE_HOME 0x20
-#define FLAG_ERROR 0x40
+// WAIT_FOR_PLAYER waits for player to hit button
+// SEND_MOVES
+enum FSMState {WAIT_FOR_PLAYER, SEND_MOVES};
+
+// Flags recieved from MSP
+#define FLAG_RECV_NONE 0x01
+#define FLAG_RECV_ALIGN 0x02
+#define FLAG_RECV_START 0x04
+#define FLAG_RECV_PLAYER_MOVE 0x08
+#define FLAG_RECV_DONE 0x10
+// Flags to send
+#define FLAG_SEND_WAIT_HOME 0x01
+#define FLAG_SEND_PING 0x02
+#define FLAG_SEND_MOVE 0x04
+#define FLAG_SEND_MAJOR_FAULT 0x08
+#define FLAG_SEND_ILLEGAL_MOVE 0x10
 
 #include "ImageState.h"
 
 class FSM {
     public:
-        FSM(bool playerFirst);
+        FSM();
         // Runs next state and returns data to be communicated with 
-        char* runThread(char* flags, int& outputLen);
-        bool playerMove;
-        bool inGame;
+        void runThread();
         FSMState state;
         FSMState tempNextState;
-        int currentFlags;
+        char currentFlags;
         ImageState boardState;
+        char* currentOutput;
+        char outputFlags;
+        int outputLength;
+        std::list<ImageMove> moveList;
+        bool dataSent;
     private:
         // Calculates the next state
         void nextState();
         // Switches state, should only be run when running thread is about to sleep
-        char* outputState(int& length);
+        void outputState();
+        // sets the output array to the message
+        void setOutput(char flags);
+        // sets the output array to the message with a move
+        void setOutput(char flags, ImageMove& move);
         // convert move struct to char array
         std::string convertMoveToComms(ImageMove& move);
 };

@@ -7,8 +7,8 @@ enable_testing()
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
-set(Image_Recog_H_Files "Cluster.h" "ImageState.h" "PieceRecognition.h" "FSM.h")
-set(Image_Recog_CPP_Files "Cluster.cpp" "ImageState.cpp" "PieceRecognition.cpp" "FSM.cpp")
+set(Image_Recog_H_Files "Cluster.h" "ImageState.h" "PieceRecognition.h" "FSM.h" "Comms.h")
+set(Image_Recog_CPP_Files "Cluster.cpp" "ImageState.cpp" "PieceRecognition.cpp" "FSM.cpp" "Comms.cpp")
 
 add_executable(CapstoneRPi main.cpp ${Image_Recog_H_Files} ${Image_Recog_CPP_Files})
 
