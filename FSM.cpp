@@ -113,6 +113,7 @@ void FSM::nextState() {
                             }
                         }
                         printBoardState(flipped);
+                        std::cout << "\n";
                         jimmy.gen_move(flipped);
                         printBoardState(jimmy.board);
                         tempNextState = WAIT_FOR_PLAYER;
