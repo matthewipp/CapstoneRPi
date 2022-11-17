@@ -111,6 +111,7 @@ void FSM::nextState() {
                         jimmy.gen_move(boardState.boardState);
                         printBoardState(jimmy.board);
                         boardState.createMoveList(moveList, jimmy.board);
+                        std::cout << "Moves to make: " << (int)moveList.size() << "\n";
                         if(boardState.majorFault) {
                             sendFlags |= FLAG_SEND_MAJOR_FAULT;
                             tempNextState = WAIT_FOR_PLAYER;
