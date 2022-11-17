@@ -153,9 +153,14 @@ void FSM::outputState() {
             }
             break;
         case SEND_MOVES:
-            setOutput(outputFlags, moveList.front());
             if(moveList.size() > 0) {
+                setOutput(outputFlags, moveList.front());
                 moveList.pop_front();
+            }
+            else {
+                tempNextState = WAIT_FOR_PLAYER;
+                currentFlags &= ~FLAG_SEND_MOVE;
+                currentFlags |= FLAG_SEND_WAIT_HOME;
             }
             break;
     }
