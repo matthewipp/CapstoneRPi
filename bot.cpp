@@ -1,5 +1,6 @@
 
 #include "bot.h"
+#include <iostream>
 
 /*
 Function for bot performing move
