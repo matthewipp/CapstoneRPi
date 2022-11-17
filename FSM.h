@@ -39,7 +39,7 @@ class FSM {
         FSMState tempNextState;
         char currentFlags;
         ImageState boardState;
-        char* currentOutput;
+        char currentOutput[11];
         char outputFlags;
         int outputLength;
         std::list<ImageMove> moveList;

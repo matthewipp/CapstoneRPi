@@ -151,3 +151,22 @@ void FSM::runThread() {
     nextState();
     outputState();
 }
+
+void FSM::setOutput(char flags) {
+    ImageMove noMove;
+    setOutput(flags, noMove);
+}
+
+void FSM::setOutput(char flags, ImageMove& move) {
+    currentOutput[0] = (char)0xFF;
+    currentOutput[1] = (char)0xFF;
+    currentOutput[2] = flags;
+    currentOutput[3] = (char)(move.startX >> 8);
+    currentOutput[4] = (char)(move.startX);
+    currentOutput[5] = (char)(move.startY >> 8);
+    currentOutput[6] = (char)(move.startY);
+    currentOutput[7] = (char)(move.endX >> 8);
+    currentOutput[8] = (char)(move.endX);
+    currentOutput[9] = (char)(move.endY >> 8);
+    currentOutput[10] = (char)(move.endY);
+}
