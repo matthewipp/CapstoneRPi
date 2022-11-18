@@ -199,6 +199,10 @@ Bot::Move Bot::calc_move(uint8_t depth, int alpha, int beta) {
     if (this->color) {
         best_value = -MAX_INT;
         for (Move move : this->moves()) {
+            if (move.t) {
+                this->move_focus = move.f;
+                this->focused = true;
+            }
             this->apply_move(move);
             value = this->alpha_beta(depth, alpha, beta);
             this->undo_move(move);
@@ -210,6 +214,10 @@ Bot::Move Bot::calc_move(uint8_t depth, int alpha, int beta) {
     } else {
         best_value = MAX_INT;
         for (Move move : this->moves()) {
+            if (move.t) {
+                this->move_focus = move.f;
+                this->focused = true;
+            }
             this->apply_move(move);
             value = this->alpha_beta(depth, alpha, beta);
             this->undo_move(move);
@@ -231,6 +239,10 @@ int Bot::alpha_beta(uint8_t depth, int alpha, int beta) {
     if (this->color) {                  // If the current evaluation is from red perspective
         int value = -MAX_INT;
         for (Move move : this->moves()) {
+            if (move.t) {
+                this->move_focus = move.f;
+                this->focused = true;
+            }
             this->apply_move(move);
             value = max(value, this->alpha_beta(depth-1, alpha, beta));
             this->undo_move(move);
@@ -242,6 +254,10 @@ int Bot::alpha_beta(uint8_t depth, int alpha, int beta) {
     } else {                            // If the current evaluation is from blue perspective
         int value = MAX_INT;
         for (Move move : this->moves()) {
+            if (move.t) {
+                this->move_focus = move.f;
+                this->focused = true;
+            }
             this->apply_move(move);
             value = min(value, this->alpha_beta(depth-1, alpha, beta));
             this->undo_move(move);
@@ -368,54 +384,55 @@ bool Bot::checkMoves(char p, int8_t dir, Bot::Coord pos) {
 Calculates list of legal moves from current board state
 */
 std::vector<Bot::Move> Bot::moves() {
-    
-    // Tracks which direction piece can move (along y-axis)
-    int8_t dir;
-    // Tracks whether it is possible to capture
-    bool can_cap = false;
-    // Stores return value
-    std::vector<Move> ret;
+    if (!focused) {
+        // Tracks which direction piece can move (along y-axis)
+        int8_t dir;
+        // Tracks whether it is possible to capture
+        bool can_cap = false;
+        // Stores return value
+        std::vector<Move> ret;
 
-    // Loop through every tile on the board
-    for (uint8_t x = 0; x < 8; x++) {
-        for (uint8_t y = 0; y < 8; y++) {
-            // Skip if the square is empty
-            if (board[x][y] == 0) 
-                continue;
-            // Skip if the piece is the wrong color
-            if (IS_RED(board[x][y]) != color) 
-                continue;
-            // If piece is crowned allow it to move in both directions; else, direction is determined by color
-            if (IS_CROWNED(board[x][y]))
-                dir = 0;
-            else
-                dir = this->color ? RED_DIR : BLUE_DIR;
-            
-            for (int8_t yDiff = -1; yDiff <= 1; yDiff += 2) {
-                if (yDiff > dir + 1 || yDiff < dir - 1) 
+        // Loop through every tile on the board
+        for (uint8_t x = 0; x < 8; x++) {
+            for (uint8_t y = 0; y < 8; y++) {
+                // Skip if the square is empty
+                if (board[x][y] == 0) 
                     continue;
-                for (int8_t xDiff = -1; xDiff <= 1; xDiff += 2) {
-                    if (y + (yDiff<<1) <= 7 && y + (yDiff<<1) >= 0) {
-                        if (x + (xDiff<<1) <= 7 && x + (xDiff<<1) >= 0) {
-                            if (board[x+xDiff][y+yDiff] != 0 && IS_RED(board[x+xDiff][y+yDiff]) != IS_RED(board[x][y])) {
-                                if (board[x+(xDiff<<1)][y+(yDiff<<1)] == 0) {
-                                    if (!can_cap) {
-                                        can_cap = true;
-                                        ret.clear();
+                // Skip if the piece is the wrong color
+                if (IS_RED(board[x][y]) != color) 
+                    continue;
+                // If piece is crowned allow it to move in both directions; else, direction is determined by color
+                if (IS_CROWNED(board[x][y]))
+                    dir = 0;
+                else
+                    dir = this->color ? RED_DIR : BLUE_DIR;
+                
+                for (int8_t yDiff = -1; yDiff <= 1; yDiff += 2) {
+                    if (yDiff > dir + 1 || yDiff < dir - 1) 
+                        continue;
+                    for (int8_t xDiff = -1; xDiff <= 1; xDiff += 2) {
+                        if (y + (yDiff<<1) <= 7 && y + (yDiff<<1) >= 0) {
+                            if (x + (xDiff<<1) <= 7 && x + (xDiff<<1) >= 0) {
+                                if (board[x+xDiff][y+yDiff] != 0 && IS_RED(board[x+xDiff][y+yDiff]) != IS_RED(board[x][y])) {
+                                    if (board[x+(xDiff<<1)][y+(yDiff<<1)] == 0) {
+                                        if (!can_cap) {
+                                            can_cap = true;
+                                            ret.clear();
+                                        }
+                                        ret.push_back({{x, y}, {(uint8_t)(x+(xDiff<<1)), (uint8_t)(y+(yDiff<<1))}, 
+                                                        board[x][y], true, board[x+xDiff][y+yDiff], 
+                                                        checkMoves(board[x][y], dir, {(uint8_t)(x+(xDiff<<1)), (uint8_t)(y+(yDiff<<1))})});
                                     }
-                                    ret.push_back({{x, y}, {(uint8_t)(x+(xDiff<<1)), (uint8_t)(y+(yDiff<<1))}, 
-                                                    board[x][y], true, board[x+xDiff][y+yDiff], 
-                                                    checkMoves(board[x][y], dir, {(uint8_t)(x+(xDiff<<1)), (uint8_t)(y+(yDiff<<1))})});
                                 }
                             }
                         }
-                    }
-                    if (!can_cap) {
-                        if (x + xDiff <= 7 && x + xDiff >= 0) {
-                            if (y + yDiff <= 7 && y + yDiff >= 0) {
-                                if (board[x+xDiff][y+yDiff] == 0) {
-                                    ret.push_back({{x, y}, {(uint8_t)(x+xDiff), (uint8_t)(y+yDiff)}, 
-                                                board[x][y], false, 0, false});
+                        if (!can_cap) {
+                            if (x + xDiff <= 7 && x + xDiff >= 0) {
+                                if (y + yDiff <= 7 && y + yDiff >= 0) {
+                                    if (board[x+xDiff][y+yDiff] == 0) {
+                                        ret.push_back({{x, y}, {(uint8_t)(x+xDiff), (uint8_t)(y+yDiff)}, 
+                                                    board[x][y], false, 0, false});
+                                    }
                                 }
                             }
                         }
@@ -423,8 +440,54 @@ std::vector<Bot::Move> Bot::moves() {
                 }
             }
         }
+        return ret;
+    } else {
+        x = this->move_focus.x;
+        y = this->move_focus.y;
+        // Skip if the square is empty
+        if (board[x][y] == 0) 
+            continue;
+        // Skip if the piece is the wrong color
+        if (IS_RED(board[x][y]) != color) 
+            continue;
+        // If piece is crowned allow it to move in both directions; else, direction is determined by color
+        if (IS_CROWNED(board[x][y]))
+            dir = 0;
+        else
+            dir = this->color ? RED_DIR : BLUE_DIR;
+        
+        for (int8_t yDiff = -1; yDiff <= 1; yDiff += 2) {
+            if (yDiff > dir + 1 || yDiff < dir - 1) 
+                continue;
+            for (int8_t xDiff = -1; xDiff <= 1; xDiff += 2) {
+                if (y + (yDiff<<1) <= 7 && y + (yDiff<<1) >= 0) {
+                    if (x + (xDiff<<1) <= 7 && x + (xDiff<<1) >= 0) {
+                        if (board[x+xDiff][y+yDiff] != 0 && IS_RED(board[x+xDiff][y+yDiff]) != IS_RED(board[x][y])) {
+                            if (board[x+(xDiff<<1)][y+(yDiff<<1)] == 0) {
+                                if (!can_cap) {
+                                    can_cap = true;
+                                    ret.clear();
+                                }
+                                ret.push_back({{x, y}, {(uint8_t)(x+(xDiff<<1)), (uint8_t)(y+(yDiff<<1))}, 
+                                                board[x][y], true, board[x+xDiff][y+yDiff], 
+                                                checkMoves(board[x][y], dir, {(uint8_t)(x+(xDiff<<1)), (uint8_t)(y+(yDiff<<1))})});
+                            }
+                        }
+                    }
+                }
+                if (!can_cap) {
+                    if (x + xDiff <= 7 && x + xDiff >= 0) {
+                        if (y + yDiff <= 7 && y + yDiff >= 0) {
+                            if (board[x+xDiff][y+yDiff] == 0) {
+                                ret.push_back({{x, y}, {(uint8_t)(x+xDiff), (uint8_t)(y+yDiff)}, 
+                                            board[x][y], false, 0, false});
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        this->focused = false;
+        return ret;
     }
-
-    return ret;
-
 }

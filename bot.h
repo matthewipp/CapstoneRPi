@@ -39,7 +39,8 @@ public:
     char board[8][8];
     uint8_t red_count;
     uint8_t blue_count;
-    Bot::Coord move_focus;
+    Bot::Coord move_focus = {8, 8};
+    bool focused = false;
 
     Bot();
     Bot(uint8_t depth);
