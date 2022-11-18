@@ -262,6 +262,7 @@ bool Bot::over() {
 Function evaluates board
 */
 int Bot::eval() {
+    std::cout << "Here" << std::endl;
     this->node_count++;
     int score = 0;
     if (this->over()) {
