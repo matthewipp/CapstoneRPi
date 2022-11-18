@@ -446,10 +446,10 @@ std::vector<Bot::Move> Bot::moves() {
         uint8_t y = this->move_focus.y;
         // Skip if the square is empty
         if (board[x][y] == 0) 
-            continue;
+            return ret;
         // Skip if the piece is the wrong color
         if (IS_RED(board[x][y]) != color) 
-            continue;
+            return ret;
         // If piece is crowned allow it to move in both directions; else, direction is determined by color
         if (IS_CROWNED(board[x][y]))
             dir = 0;
