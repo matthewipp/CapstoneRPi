@@ -442,8 +442,8 @@ std::vector<Bot::Move> Bot::moves() {
         }
         return ret;
     } else {
-        x = this->move_focus.x;
-        y = this->move_focus.y;
+        uint8_t x = this->move_focus.x;
+        uint8_t y = this->move_focus.y;
         // Skip if the square is empty
         if (board[x][y] == 0) 
             continue;
