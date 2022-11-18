@@ -35,7 +35,7 @@ public:
     uint8_t depth;
     bool color;
     bool eval_color;
-    uint32_t node_count;
+    volatile uint32_t node_count;
     char board[8][8];
     uint8_t red_count;
     uint8_t blue_count;
