@@ -65,8 +65,8 @@ void Bot::set_board(char b[8][8]) {
     // Initialize red and blue piece counts
     this->red_count = this->blue_count = 0;
     // Iterate through the board
-    for (uchar x = 0; x < 8; x++) {
-        for (uchar y = 0; y < 8; y++) {
+    for (uint8_t x = 0; x < 8; x++) {
+        for (uint8_t y = 0; y < 8; y++) {
             // If there's a piece at this tile, increment the corresponding color count
             if (b[x][y] != 0) {
                 if (IS_RED(b[x][y])) {
@@ -86,8 +86,8 @@ Compares two 2D character arrays
 */
 bool Bot::board_equal(char b1[8][8], char b2[8][8]) {
     // Iterate through every element
-    for (uchar x = 0; x < 8; x++) {
-        for (uchar y = 0; y < 8; y++) {
+    for (uint8_t x = 0; x < 8; x++) {
+        for (uint8_t y = 0; y < 8; y++) {
             // If the elements do not match, return false
             if (b1[x][y] != b2[x][y]) {
                 return false;
@@ -192,7 +192,7 @@ int min(int a, int b) {
 /*
 Function calculates algorithms chosen move
 */
-Bot::Move Bot::calc_move(uchar depth, int alpha, int beta) {
+Bot::Move Bot::calc_move(uint8_t depth, int alpha, int beta) {
     int best_value;
     int value;
     Move best_move;
@@ -222,7 +222,7 @@ Bot::Move Bot::calc_move(uchar depth, int alpha, int beta) {
     return best_move;
 }
 
-int Bot::alpha_beta(uchar depth, int alpha, int beta) {
+int Bot::alpha_beta(uint8_t depth, int alpha, int beta) {
     if (depth == 0 || this->over()) {   // If game is over or if leaf node
         return this->eval();
     }
@@ -267,8 +267,8 @@ int Bot::eval() {
     if (this->over()) {
         return this->red_count > this->blue_count ? MAX_INT : -MAX_INT;
     }
-    for (uchar x = 0; x < 8; x++) {
-        for (uchar y = 0; y < 8; y++) {
+    for (uint8_t x = 0; x < 8; x++) {
+        for (uint8_t y = 0; y < 8; y++) {
             if (this->board[x][y] == 0)
                 continue;
             if (IS_RED(this->board[x][y]))
@@ -288,8 +288,8 @@ Bot::Bot() {
 
     this->color = true;
 
-    for (uchar x = 0; x < 8; x++) {
-        for (uchar y = 0; y < 8; y++) {
+    for (uint8_t x = 0; x < 8; x++) {
+        for (uint8_t y = 0; y < 8; y++) {
             this->board[x][y] = 0;
         }
     }
@@ -305,11 +305,11 @@ Configures start position
 */
 void Bot::init_board() {
 
-    for (uchar x = 0; x < 8; x++) {
-        for (uchar y = 0; y < 3; y++)
+    for (uint8_t x = 0; x < 8; x++) {
+        for (uint8_t y = 0; y < 3; y++)
             if ((x + y) % 2 == 1)
                 this->board[x][y] = 'r';
-        for (uchar y = 5; y < 8; y++)
+        for (uint8_t y = 5; y < 8; y++)
             if ((x + y) % 2 == 1)
                 this->board[x][y] = 'b';
     }
@@ -323,8 +323,8 @@ Arbitrary board setup determined by string input
 void Bot::init_board(std::string bState) {
     this->red_count = this->blue_count = 0;
     std::string tok;
-    for (uchar x = 0; x < 8; x++) {
-        for (uchar y = 0; y < 8; y++) {
+    for (uint8_t x = 0; x < 8; x++) {
+        for (uint8_t y = 0; y < 8; y++) {
             tok = bState.substr(0, bState.find(" "));
             bState = bState.substr(bState.find(" ") + 1, bState.size());
             if (tok == "0")
@@ -340,12 +340,12 @@ void Bot::init_board(std::string bState) {
     }
 }
 
-bool Bot::checkMoves(char p, char dir, uchar x, uchar y) {
+bool Bot::checkMoves(char p, char dir, uint8_t x, uint8_t y) {
 
-    for (char yDiff = -1; yDiff <= 1; yDiff += 2) {
+    for (int8_t yDiff = -1; yDiff <= 1; yDiff += 2) {
         if (yDiff > dir + 1 || yDiff < dir - 1) 
             continue;
-        for (char xDiff = -1; xDiff <= 1; xDiff += 2) {
+        for (int8_t xDiff = -1; xDiff <= 1; xDiff += 2) {
             if (y + (yDiff<<1) <= 7 && y + (yDiff<<1) >= 0) {
                 if (x + (xDiff<<1) <= 7 && x + (xDiff<<1) >= 0) {
                     if (board[x+xDiff][y+yDiff] != 0 && IS_RED(board[x+xDiff][y+yDiff]) != IS_RED(p)) {
@@ -375,8 +375,8 @@ std::vector<Bot::Move> Bot::moves() {
     bool turn_continues = false;
 
     // Loop through every tile on the board
-    for (uchar x = 0; x < 8; x++) {
-        for (uchar y = 0; y < 8; y++) {
+    for (uint8_t x = 0; x < 8; x++) {
+        for (uint8_t y = 0; y < 8; y++) {
             // Skip if the square is empty
             if (board[x][y] == 0) 
                 continue;
@@ -390,10 +390,10 @@ std::vector<Bot::Move> Bot::moves() {
             else
                 dir = this->color ? RED_DIR : BLUE_DIR;
             
-            for (char yDiff = -1; yDiff <= 1; yDiff += 2) {
+            for (int8_t yDiff = -1; yDiff <= 1; yDiff += 2) {
                 if (yDiff > dir + 1 || yDiff < dir - 1) 
                     continue;
-                for (char xDiff = -1; xDiff <= 1; xDiff += 2) {
+                for (int8_t xDiff = -1; xDiff <= 1; xDiff += 2) {
                     if (y + (yDiff<<1) <= 7 && y + (yDiff<<1) >= 0) {
                         if (x + (xDiff<<1) <= 7 && x + (xDiff<<1) >= 0) {
                             if (board[x+xDiff][y+yDiff] != 0 && IS_RED(board[x+xDiff][y+yDiff]) != IS_RED(board[x][y])) {
@@ -402,7 +402,7 @@ std::vector<Bot::Move> Bot::moves() {
                                         can_cap = true;
                                         ret.clear();
                                     }
-                                    ret.push_back({{x, y}, {(uchar)(x+(xDiff<<1)), (uchar)(y+(yDiff<<1))}, 
+                                    ret.push_back({{x, y}, {(uint8_t)(x+(xDiff<<1)), (uint8_t)(y+(yDiff<<1))}, 
                                                     board[x][y], true, board[x+xDiff][y+yDiff], 
                                                     checkMoves(board[x][y], dir, x+(xDiff<<1), y+(yDiff<<1))});
                                 }
@@ -413,7 +413,7 @@ std::vector<Bot::Move> Bot::moves() {
                         if (x + xDiff <= 7 && x + xDiff >= 0) {
                             if (y + yDiff <= 7 && y + yDiff >= 0) {
                                 if (board[x+xDiff][y+yDiff] == 0) {
-                                    ret.push_back({{x, y}, {(uchar)(x+xDiff), (uchar)(y+yDiff)}, 
+                                    ret.push_back({{x, y}, {(uint8_t)(x+xDiff), (uint8_t)(y+yDiff)}, 
                                                 board[x][y], false, 0, false});
                                 }
                             }

@@ -7,6 +7,7 @@
 #include <cstring>
 #include <vector>
 #include <string>
+#include <cstdint>
 
 class Bot {
 public:
@@ -31,19 +32,19 @@ public:
         Bot::Coord p;
     } State;
 
-    uchar depth;
+    uint8_t depth;
     bool color;
     bool eval_color;
-    uint node_count;
+    uint32_t node_count;
     char board[8][8];
-    uchar red_count;
-    uchar blue_count;
+    uint8_t red_count;
+    uint8_t blue_count;
     Bot::Coord move_focus;
 
     Bot();
-    Bot(uchar depth);
+    Bot(uint8_t depth);
     uint move();
-    int alpha_beta(uchar, int, int);
+    int alpha_beta(uint8_t, int, int);
     std::vector<Bot::Move> moves();
     int eval();
     bool over();
@@ -51,8 +52,8 @@ public:
     void init_board(std::string);
     void apply_move(Bot::Move);
     void undo_move(Bot::Move);
-    Move calc_move(uchar, int, int);
-    bool checkMoves(char, char, uchar, uchar);
+    Move calc_move(uint8_t, int, int);
+    bool checkMoves(char, char, uint8_t, uint8_t);
     void set_board(char b[8][8]);
     uint gen_move(char b[8][8]);
     bool board_equal(char b1[8][8], char b2[8][8]);
