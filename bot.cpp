@@ -384,14 +384,13 @@ bool Bot::checkMoves(char p, int8_t dir, Bot::Coord pos) {
 Calculates list of legal moves from current board state
 */
 std::vector<Bot::Move> Bot::moves() {
+    // Tracks which direction piece can move (along y-axis)
+    int8_t dir;
+    // Tracks whether it is possible to capture
+    bool can_cap = false;
+    // Stores return value
+    std::vector<Move> ret;
     if (!focused) {
-        // Tracks which direction piece can move (along y-axis)
-        int8_t dir;
-        // Tracks whether it is possible to capture
-        bool can_cap = false;
-        // Stores return value
-        std::vector<Move> ret;
-
         // Loop through every tile on the board
         for (uint8_t x = 0; x < 8; x++) {
             for (uint8_t y = 0; y < 8; y++) {
