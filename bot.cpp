@@ -223,6 +223,7 @@ Bot::Move Bot::calc_move(uint8_t depth, int alpha, int beta) {
 }
 
 int Bot::alpha_beta(uint8_t depth, int alpha, int beta) {
+    this->node_count++;
     if (depth == 0 || this->over()) {   // If game is over or if leaf node
         return this->eval();
     }
@@ -263,7 +264,6 @@ Function evaluates board
 */
 int Bot::eval() {
     std::cout << "Here" << std::endl;
-    this->node_count++;
     int score = 0;
     if (this->over()) {
         return this->red_count > this->blue_count ? MAX_INT : -MAX_INT;
