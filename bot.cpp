@@ -227,6 +227,7 @@ int Bot::alpha_beta(uint8_t depth, int alpha, int beta) {
     if (depth == 0 || this->over()) {   // If game is over or if leaf node
         return this->eval();
     }
+    std::cout << "Hello" << std::endl; 
     if (this->color) {                  // If the current evaluation is from red perspective
         int value = -MAX_INT;
         for (Move move : this->moves()) {
