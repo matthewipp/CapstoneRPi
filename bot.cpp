@@ -341,7 +341,10 @@ void Bot::init_board(std::string bState) {
     }
 }
 
-bool Bot::checkMoves(char p, char dir, uint8_t x, uint8_t y) {
+bool Bot::checkMoves(char p, int8_t dir, Bot::Coord pos) {
+
+    uint8_t x = pos.x;
+    uint8_t y = pos.y;
 
     for (int8_t yDiff = -1; yDiff <= 1; yDiff += 2) {
         if (yDiff > dir + 1 || yDiff < dir - 1) 
@@ -402,7 +405,7 @@ std::vector<Bot::Move> Bot::moves() {
                                     }
                                     ret.push_back({{x, y}, {(uint8_t)(x+(xDiff<<1)), (uint8_t)(y+(yDiff<<1))}, 
                                                     board[x][y], true, board[x+xDiff][y+yDiff], 
-                                                    checkMoves(board[x][y], dir, x+(xDiff<<1), y+(yDiff<<1))});
+                                                    checkMoves(board[x][y], dir, {(uint8_t)(x+(xDiff<<1)), (uint8_t)(y+(yDiff<<1))})});
                                 }
                             }
                         }
@@ -419,75 +422,6 @@ std::vector<Bot::Move> Bot::moves() {
                     }
                 }
             }
-
-            /*
-            // If it is capable of moving in -y direction, check for potential moves in that direction
-            if (dir < 1) {
-                // Ensure that it has room to move in the -y direction
-                if (y > 0) {
-                    // If it can capture, no need to check moves that won't result in capture
-                    if (!can_cap) {
-                        // Check if diagonal-adjacent tiles are empty
-                        if (x < 7 && (board[x+1][y-1] == 0)) {
-                            ret.push_back({{x, y}, {(uchar)(x+1), (uchar)(y-1)}, board[x][y], false, 0, false});
-                        }
-                        if (x > 0 && (board[x-1][y-1] == 0)) {
-                            ret.push_back({{x, y}, {(uchar)(x-1), (uchar)(y-1)}, board[x][y], false, 0, false});
-                        }
-                    }
-                    // Capturing requires more space
-                    if (y > 1) {
-                        // Check if enemy piece is diagonal-adjacent with an opening after
-                        if (x < 6 && board[x+1][y-1] != 0 && IS_RED(board[x+1][y-1]) != this->color && board[x+2][y-2] == 0) {
-                            // If this is the first capture, set capture flag and clear move list
-                            if (!can_cap) {
-                                can_cap = true;
-                                ret.clear();
-                            }
-                            ret.push_back({{x, y}, {(uchar)(x+2), (uchar)(y-2)}, board[x][y], true, board[x+1][y-1], checkMoves(board[x][y], dir, x+2, y-2)});
-                        }
-                        if (x > 1 && board[x-1][y-1] != 0 && IS_RED(board[x-1][y-1]) != this->color && board[x-2][y-2] == 0) {
-                            if (!can_cap) {
-                                can_cap = true;
-                                ret.clear();
-                            }
-                            ret.push_back({{x, y}, {(uchar)(x-2), (uchar)(y-2)}, board[x][y], true, board[x-1][y-1], checkMoves(board[x][y], dir, x-2, y-2)});
-                        }
-                    }
-                }
-            }
-
-            // If it is capable of moving in +y direction, check for potential moves in that direction
-            // analogous to above code for -y direction
-            if (dir > -1) {
-                if (y < 7) {
-                    if (!can_cap) {
-                        if (x < 7 && (board[x+1][y+1] == 0)) {
-                            ret.push_back({{x, y}, {(uchar)(x+1), (uchar)(y+1)}, board[x][y], false, 0, false});
-                        }
-                        if (x > 0 && (board[x-1][y+1] == 0)) {
-                            ret.push_back({{x, y}, {(uchar)(x-1), (uchar)(y+1)}, board[x][y], false, 0, false});
-                        }
-                    }
-                    if (y < 6) {
-                        if (x < 6 && board[x+1][y+1] != 0 && IS_RED(board[x+1][y+1]) != this->color && board[x+2][y+2] == 0) {
-                            if (!can_cap) {
-                                can_cap = true;
-                                ret.clear();
-                            }
-                            ret.push_back({{x, y}, {(uchar)(x+2), (uchar)(y+2)}, board[x][y], true, board[x+1][y+1], checkMoves(board[x][y], dir, x+2, y+2)});
-                        }
-                        if (x > 1 && board[x-1][y+1] != 0 && IS_RED(board[x-1][y+1]) != this->color && board[x-2][y+2] == 0) {
-                            if (!can_cap) {
-                                can_cap = true;
-                                ret.clear();
-                            }
-                            ret.push_back({{x, y}, {(uchar)(x-2), (uchar)(y+2)}, board[x][y], true, board[x-1][y+1], checkMoves(board[x][y], dir, x-2, y+2)});
-                        }
-                    }
-                }
-            }
-            */
         }
     }
 

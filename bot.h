@@ -13,8 +13,8 @@ class Bot {
 public:
 
     typedef struct {
-        uchar x;
-        uchar y;
+        uint8_t x;
+        uint8_t y;
     } Coord;
 
     typedef struct {
@@ -53,7 +53,7 @@ public:
     void apply_move(Bot::Move);
     void undo_move(Bot::Move);
     Move calc_move(uint8_t, int, int);
-    bool checkMoves(char, char, uint8_t, uint8_t);
+    bool checkMoves(char, int8_t, Bot::Coord);
     void set_board(char b[8][8]);
     uint gen_move(char b[8][8]);
     bool board_equal(char b1[8][8], char b2[8][8]);
