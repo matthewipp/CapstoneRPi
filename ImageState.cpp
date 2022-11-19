@@ -377,6 +377,15 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
         if(desiredBoard[s.x][s.y] == 'R' || desiredBoard[s.x][s.y] == 'B') {
             shouldBeKing = true;
         }
+        // Try matching error pieces first
+        if(!shouldBeBlue) {
+            for(CheckersPiece& ecp : redErrorPiecesOnBoard) {
+                if(ecp.isKing == shouldBeKing) {
+                    s.matchedPiece = &ecp;
+                    break;
+                }
+            }
+        }
         for(IncorrectSquare& sTarget : shouldBeEmpty) {
             if(sTarget.occupiedPiece->isBlue == shouldBeBlue && 
                         sTarget.occupiedPiece->isKing == shouldBeKing) {
@@ -408,7 +417,6 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
             }
         }
     }
-    std::cout << "Matched some incorrect squares\n";
     // Remove incorrect unmatched pieces
     for(IncorrectSquare& s : shouldBeEmpty) {
         if(s.matchedPiece == nullptr) {
