@@ -19,6 +19,7 @@ FSM::FSM() {
     tempNextState = WAIT_FOR_PLAYER;
     currentFlags = 0;
     dataSent = true;
+    jimmy.evalFunc = &Bot::evalIV;
 }
 
 void FSM::nextState() {
