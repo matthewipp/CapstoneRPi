@@ -23,11 +23,11 @@ uint Bot::gen_move(char b[8][8]) {
     // Set the board state to match the argument
     this->set_board(b);
     // Set Red to move
-    this->color = true;
-    std::cout << "Number of legal moves: " << this->moves().size() << std::endl;
+    this->color = this->bot_color;
+    // std::cout << "Number of legal moves: " << this->moves().size() << std::endl;
     uint32_t sum = 0;
-    while (this->color) {
-        std::cout << "In loop" << std::endl;
+    while (this->color == this->bot_color) {
+        // std::cout << "In loop" << std::endl;
         sum += this->move();
     }
     // Generate the move
@@ -198,9 +198,10 @@ int min(int a, int b) {
 Function calculates algorithms chosen move
 */
 Bot::Move Bot::calc_move(uint8_t depth, int alpha, int beta) {
-    int best_value;
-    int value;
+    int32_t best_value;
+    int32_t value;
     Bot::Move best_move;
+    bool first_tie = true;
     if (this->color) {
         best_value = -MAX_INT;
         for (Move move : this->moves()) {
@@ -214,9 +215,14 @@ Bot::Move Bot::calc_move(uint8_t depth, int alpha, int beta) {
             if (move.t) {
                 this->focused = false;
             }
-            if (value >= best_value) {
+            // std::cout << value << std::endl;
+            if (value > best_value) {
                 best_move = move;
                 best_value = value;
+            } else if (value == best_value && (first_tie || this->tie_breaker[this->tie_count++])) {
+                best_move = move;
+                best_value = value;
+                first_tie = false;
             }
         }
     } else {
@@ -232,24 +238,38 @@ Bot::Move Bot::calc_move(uint8_t depth, int alpha, int beta) {
             if (move.t) {
                 this->focused = false;
             }
-            if (value <= best_value) {
+            if (value < best_value) {
                 best_move = move;
                 best_value = value;
+            } else if (value == best_value && (first_tie || this->tie_breaker[this->tie_count++])) {
+                best_move = move;
+                best_value = value;
+                first_tie = false;
             }
         }
     }
     // std::cout << "Board Eval: " << best_value << std::endl;
+    this->current_eval = best_value;
     return best_move;
 }
 
 int Bot::alpha_beta(uint8_t depth, int alpha, int beta) {
     this->node_count++;
     if (depth == 0 || this->over()) {   // If game is over or if leaf node
-        return this->eval();
+        this->depth = depth;
+        return (this->*(this->evalFunc))();
     }
+    std::vector<Move> my_moves = this->moves();
     if (this->color) {                  // If the current evaluation is from red perspective
         int value = -MAX_INT;
-        for (Move move : this->moves()) {
+        if (my_moves.size() == 0) {
+            this->color = !this->color;
+            value = max(value, this->alpha_beta(depth-1, alpha, beta));
+            this->color = !this->color;
+            alpha = max(alpha, value);
+            return value;
+        }
+        for (Move move : my_moves) {
             if (move.t) {
                 this->move_focus = move.f;
                 this->focused = true;
@@ -267,7 +287,14 @@ int Bot::alpha_beta(uint8_t depth, int alpha, int beta) {
         return value;
     } else {                            // If the current evaluation is from blue perspective
         int value = MAX_INT;
-        for (Move move : this->moves()) {
+        if (my_moves.size() == 0) {
+            this->color = !this->color;
+            value = min(value, this->alpha_beta(depth-1, alpha, beta));
+            this->color = !this->color;
+            beta = min(alpha, value);
+            return value;
+        }
+        for (Move move : my_moves) {
             if (move.t) {
                 this->move_focus = move.f;
                 this->focused = true;
@@ -296,10 +323,10 @@ bool Bot::over() {
 /*
 Function evaluates board
 */
-int Bot::eval() {
-    int score = 0;
+int32_t Bot::evalI() {
+    int32_t score = 0;
     if (this->over()) {
-        return this->red_count > this->blue_count ? MAX_INT : -MAX_INT;
+        return this->red_count > this->blue_count ? (MAX_INT - max_depth + depth) : -(MAX_INT - max_depth + depth);
     }
     for (uint8_t x = 0; x < 8; x++) {
         for (uint8_t y = 0; y < 8; y++) {
@@ -312,6 +339,81 @@ int Bot::eval() {
         }
     }
     return score;
+}
+
+int32_t Bot::evalII() {
+    int32_t score = 0;
+    if (this->over()) {
+        // std::cout << "Hello: " << "(" << (int)red_count << ", " << (int)blue_count << ")" << std::endl;
+        // std::cout << (MAX_INT - max_depth + depth - 1) << std::endl;
+        return this->red_count > this->blue_count ? (MAX_INT - max_depth + depth) : -(MAX_INT - max_depth + depth);
+    }
+    for (uint8_t x = 0; x < 8; x++) {
+        uint8_t y;
+        for (y = 0; y < 4; y++) {
+            if (this->board[x][y] == 0)
+                continue;
+            if (IS_RED(this->board[x][y]))
+                score += IS_CROWNED(this->board[x][y]) ? 10 : 5;
+            else
+                score -= IS_CROWNED(this->board[x][y]) ? 10 : 7;
+        }
+        for (   ; y < 8; y++) {
+            if (this->board[x][y] == 0)
+                continue;
+            if (IS_RED(this->board[x][y]))
+                score += IS_CROWNED(this->board[x][y]) ? 10 : 7;
+            else
+                score -= IS_CROWNED(this->board[x][y]) ? 10 : 5;
+        }
+    }
+    return score;
+}
+
+int32_t Bot::evalIII() {
+    int32_t score = 0;
+    if (this->over()) {
+        return this->red_count > this->blue_count ? (MAX_INT - max_depth + depth) : -(MAX_INT - max_depth + depth);
+    }
+    for (uint8_t x = 0; x < 8; x++) {
+        uint8_t y;
+        for (y = 0; y < 8; y++) {
+            if (this->board[x][y] == 0)
+                continue;
+            if (IS_RED(this->board[x][y]))
+                score += IS_CROWNED(this->board[x][y]) ? 7 : 5 + y;
+            else
+                score -= IS_CROWNED(this->board[x][y]) ? 7 : 5 + (7 - y);
+        }
+    }
+    return score;
+}
+
+int32_t Bot::evalIV() {
+    int32_t score = 0;
+    if (this->over()) {
+        return this->red_count > this->blue_count ? (MAX_INT - max_depth + depth) : -(MAX_INT - max_depth + depth);
+    }
+    for (uint8_t x = 0; x < 8; x++) {
+        uint8_t y;
+        for (y = 0; y < 4; y++) {
+            if (this->board[x][y] == 0)
+                continue;
+            if (IS_RED(this->board[x][y]))
+                score += IS_CROWNED(this->board[x][y]) ? 100000 : 500000;
+            else
+                score -= IS_CROWNED(this->board[x][y]) ? 1000000 : 700000;
+        }
+        for (   ; y < 8; y++) {
+            if (this->board[x][y] == 0)
+                continue;
+            if (IS_RED(this->board[x][y]))
+                score += IS_CROWNED(this->board[x][y]) ? 1000000 : 700000;
+            else
+                score -= IS_CROWNED(this->board[x][y]) ? 1000000 : 500000;
+        }
+    }
+    return score / (this->red_count + this->blue_count);
 }
 
 /*
@@ -327,8 +429,14 @@ Bot::Bot() {
         }
     }
 
-    this->red_count = 8;
-    this->blue_count = 8;
+    srand(time(NULL));
+    for (uint8_t i = 1; i >= 1; i++) {
+        this->tie_breaker[i] = (bool)(rand() % 2);
+    }
+    this->tie_breaker[0] = true;
+
+    this->red_count = 0;
+    this->blue_count = 0;
 
 }
 
@@ -338,13 +446,21 @@ Configures start position
 */
 void Bot::init_board() {
 
+    this->red_count = this->blue_count = 0;
+
     for (uint8_t x = 0; x < 8; x++) {
-        for (uint8_t y = 0; y < 3; y++)
-            if ((x + y) % 2 == 1)
+        for (uint8_t y = 0; y < 3; y++) {
+            if ((x + y) % 2 == 1) {
                 this->board[x][y] = 'r';
-        for (uint8_t y = 5; y < 8; y++)
-            if ((x + y) % 2 == 1)
+                this->red_count++;
+            }
+        }
+        for (uint8_t y = 5; y < 8; y++) {
+            if ((x + y) % 2 == 1) {
                 this->board[x][y] = 'b';
+                this->blue_count++;
+            }
+        }
     }
 
 }
@@ -502,7 +618,6 @@ std::vector<Bot::Move> Bot::moves() {
                 }
             }
         }
-        this->focused = false;
         return ret;
     }
 }

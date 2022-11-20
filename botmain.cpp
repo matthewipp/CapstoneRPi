@@ -14,7 +14,7 @@ std::string board_to_string(char b[8][8]) {
             if (b[x][y])
                 ret = ret + b[x][y] + " ";
             else
-                ret += "0 ";
+                ret += ". ";
         }
         ret += "\n";
     }
@@ -72,17 +72,34 @@ int main() {
     */
 
     Bot g;
-
-    // g.init_board();
-    g.init_board("0 r 0 0 0 b 0 b r 0 r 0 0 0 b 0 0 r 0 0 0 b 0 b r 0 r 0 0 0 b 0 0 r 0 0 0 b 0 b r 0 r 0 0 0 b 0 0 r 0 0 0 b 0 b r 0 r 0 0 0 b 0");
-    
     Bot q;
+    q.bot_color = false;
+    q.evalFunc = &Bot::evalI;
+    g.evalFunc = &Bot::evalI;
+    bool blue_first = false;
 
-    std::cout << board_to_string(g.board) <<  std::endl;
+    q.init_board();
+    // q.init_board("0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 R 0 0 0 0 r 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 B 0 0 0 0 0 0 0 0 0 0 R 0 0 B 0 0 0 0 0");
+    // q.init_board("0 b 0 0 0 0 0 R r 0 0 0 0 0 0 0 0 0 0 0 0 0 0 R 0 0 0 0 0 0 R 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 R 0 0 0 0 0 0 0 0 R 0");
 
-    std::cout << q.gen_move(g.board) << '\n';
-
+    g.set_board(q.board);
     std::cout << board_to_string(q.board) <<  std::endl;
+    while (!g.over() || !q.over()) {
+        if (!blue_first) {
+            std::cout << g.gen_move(q.board) << std::endl;
+            std::cout << board_to_string(g.board) <<  std::endl;
+            std::cout << "G's Eval: " << g.current_eval << " (" << (int)g.red_count << ", " << (int)g.blue_count << ")" << '\n' << std::endl;
+        }
+        q.gen_move(g.board);
+        std::cout << board_to_string(q.board) <<  std::endl;
+        std::cout << "Q's Eval: " << q.current_eval << " (" << (int)q.red_count << ", " << (int)q.blue_count << ")" << '\n' << std::endl;
+        blue_first = false;
+    }
+    // std::cout << board_to_string(g.board) <<  std::endl;
+
+    // std::cout << q.gen_move(g.board) << '\n';
+
+    // std::cout << board_to_string(q.board) <<  std::endl;
 
     // while (!g.over()) {
     //     std::cout << g.move() << std::endl;

@@ -8,6 +8,8 @@
 #include <vector>
 #include <string>
 #include <cstdint>
+#include <stdlib.h>
+#include <time.h>
 
 class Bot {
 public:
@@ -32,6 +34,7 @@ public:
         Bot::Coord p;
     } State;
 
+    uint8_t max_depth = 10;
     uint8_t depth;
     bool color;
     bool eval_color;
@@ -41,13 +44,20 @@ public:
     uint8_t blue_count;
     Bot::Coord move_focus = {8, 8};
     bool focused = false;
+    bool bot_color = true;
+    int32_t current_eval;
+    bool tie_breaker[256];
+    uint8_t tie_count = 0;
 
     Bot();
     Bot(uint8_t depth);
     uint move();
     int alpha_beta(uint8_t, int, int);
     std::vector<Bot::Move> moves();
-    int eval();
+    int32_t evalI();
+    int32_t evalII();
+    int32_t evalIII();
+    int32_t evalIV();
     bool over();
     void init_board();
     void init_board(std::string);
@@ -61,6 +71,8 @@ public:
     bool comp_boards(char bi[8][8], char bf[8][8]);
     void init_state(Bot::State * pS, char b[8][8], bool cont, Bot::Coord p);
     
+    int32_t (Bot::*evalFunc)(void) = &Bot::evalI;
+
 };
 
 #endif
