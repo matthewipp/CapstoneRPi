@@ -196,12 +196,14 @@ bool ImageState::alignCamera(cv::Mat& img) {
         return false;
     }
     // test orientation
-    float testSum = 0;
+    float testSumX = 0;
+    float testSumY = 0;
     bool alongX = true;
     for(int i = 1; i < cornerWidth; i++) {
-        testSum += corners[i].x - corners[i-1].x;
+        testSumX += corners[i].x - corners[i-1].x;
+        testSumY += corners[i].y - corners[i-1].y;
     }
-    if(testSum < 50 && testSum > -50) {
+    if(testSumX < testSumY) {
         // Goes along y axis first
         alongX = false;
     }
