@@ -297,6 +297,8 @@ bool ImageState::alignCamera(cv::Mat& img) {
         edgeY[0] = tb2 - avgSquareHeight;
         edgeY[1] = tb1 + avgSquareHeight;
     }
+    std::cout << "EdgeX: " << edgeX[0] << " to " << edgeX[1] << "\n";
+    std::cout << "EdgeY: " << edgeY[0] << " to " << edgeY[1] << "\n";
     return true;
 }
 
