@@ -400,7 +400,7 @@ int32_t Bot::evalIV() {
             if (this->board[x][y] == 0)
                 continue;
             if (IS_RED(this->board[x][y]))
-                score += IS_CROWNED(this->board[x][y]) ? 100000 : 500000;
+                score += IS_CROWNED(this->board[x][y]) ? 1000000 : 500000;
             else
                 score -= IS_CROWNED(this->board[x][y]) ? 1000000 : 700000;
         }
