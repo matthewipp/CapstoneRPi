@@ -203,7 +203,7 @@ bool ImageState::alignCamera(cv::Mat& img) {
         testSumX += corners[i].x - corners[i-1].x;
         testSumY += corners[i].y - corners[i-1].y;
     }
-    if(testSumX < testSumY) {
+    if(testSumX >= testSumY) {
         // Goes along y axis first
         alongX = false;
     }
