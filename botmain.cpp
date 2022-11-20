@@ -74,6 +74,8 @@ int main() {
     Bot g;
     Bot q;
     q.bot_color = false;
+    q.max_depth = 6;
+    g.max_depth = 1;
     q.evalFunc = &Bot::evalI;
     g.evalFunc = &Bot::evalI;
     bool blue_first = false;
@@ -84,15 +86,16 @@ int main() {
 
     g.set_board(q.board);
     std::cout << board_to_string(q.board) <<  std::endl;
+    uint32_t bnum, rnum = bnum = 0;
     while (!g.over() || !q.over()) {
         if (!blue_first) {
-            std::cout << g.gen_move(q.board) << std::endl;
+            rnum = std::max(g.gen_move(q.board), rnum);
             std::cout << board_to_string(g.board) <<  std::endl;
-            std::cout << "G's Eval: " << g.current_eval << " (" << (int)g.red_count << ", " << (int)g.blue_count << ")" << '\n' << std::endl;
+            std::cout << "G's Eval: " << g.current_eval << " (" << (int)g.red_count << ", " << (int)g.blue_count << ") " << rnum << '\n' << std::endl;
         }
-        q.gen_move(g.board);
-        std::cout << board_to_string(q.board) <<  std::endl;
-        std::cout << "Q's Eval: " << q.current_eval << " (" << (int)q.red_count << ", " << (int)q.blue_count << ")" << '\n' << std::endl;
+        bnum = std::max(bnum, q.gen_move(g.board));
+        std::cout << board_to_string(q.board);
+        std::cout << "Q's Eval: " << q.current_eval << " (" << (int)q.red_count << ", " << (int)q.blue_count << ") " << bnum << '\n' << std::endl;
         blue_first = false;
     }
     // std::cout << board_to_string(g.board) <<  std::endl;

@@ -9,7 +9,7 @@ uint Bot::move() {
     // Reset node count to track number of nodes processed in this step
     node_count = 0;
     // Apply the calculated move (search with depth of 10)
-    this->apply_move(this->calc_move(10, -MAX_INT, MAX_INT));
+    this->apply_move(this->calc_move(this->max_depth, -MAX_INT, MAX_INT));
     // Return the node count
     return node_count;
 }
