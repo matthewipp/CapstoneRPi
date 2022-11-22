@@ -90,22 +90,20 @@ int main() {
     uint32_t bnum, rnum = bnum = 0;
     while (!g.over() || !q.over()) {
         if (!blue_first) {
-            std::cout << 1 << std::endl;
             rnum = std::max(g.gen_move(q.board), rnum);
-            std::cout << 2 << std::endl;
+            c.bot_color = q.bot_color;
+            std::cout << "Legal Move: " << c.comp_boards(q.board, g.board) << std::endl;
+            std::cout << "Board Equal: " << c.board_equal(g.board, q.board) << std::endl;
             std::cout << board_to_string(g.board) <<  std::endl;
-            std::cout << 3 << std::endl;
             std::cout << "G's Eval: " << g.current_eval << " (" << (int)g.red_count << ", " << (int)g.blue_count << ") " << rnum << '\n' << std::endl;
-            std::cout << 4 << std::endl;
         }
         bnum = std::max(bnum, q.gen_move(g.board));
-        std::cout << 5 << std::endl;
+        c.bot_color = g.bot_color;
+        std::cout << "Legal Move: " << c.comp_boards(g.board, q.board) << std::endl;
         std::cout << board_to_string(q.board);
-        std::cout << 6 << std::endl;
         std::cout << "Q's Eval: " << q.current_eval << " (" << (int)q.red_count << ", " << (int)q.blue_count << ") " << bnum << '\n' << std::endl;
-        std::cout << 7 << std::endl;
         blue_first = false;
-        std::cout << 8 << std::endl;
+        // break;
     }
     // std::cout << board_to_string(g.board) <<  std::endl;
 

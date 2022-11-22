@@ -108,13 +108,23 @@ Function to initialize State struct
 */
 void Bot::init_state(Bot::State * pS, char b[8][8], bool cont, Bot::Coord p) {
     // Copy 8x8 char array
-    std::memcpy(pS->b, b, sizeof(b));
+    // std::memcpy(pS->b, b, sizeof(b));
+
+    // std::cout << "Duduh " << sizeof(b) / sizeof(b[0]) << std::endl;
+
+    for (uint8_t x = 0; x < 8; x++) {
+        for (uint8_t y = 0; y < 8; y++) {
+            pS->b[x][y] = b[x][y];
+        }
+    }
     // Assign cont
     pS->cont = cont;
     // Copy uchar array
     // std::memcpy(ret.p, p, sizeof(p));
     pS->p = p;
 }
+
+extern std::string board_to_string(char b[8][8]);
 
 /*
 Function to determine if bf is reachable from bi in a 
@@ -128,6 +138,9 @@ bool Bot::comp_boards(char bi[8][8], char bf[8][8]) {
     Bot::State * s = new State();
     Bot::State * temp;
     init_state(s, bi, false, {0, 0});
+    // std::cout << "Help" << std::endl;
+    // std::cout << board_to_string(bi) << std::endl;
+    // std::cout << board_to_string(s->b) << std::endl;
     stack.push_back(s);
 
     // Depth first traversal
@@ -137,22 +150,39 @@ bool Bot::comp_boards(char bi[8][8], char bf[8][8]) {
         stack.pop_back();
         // Configure board state
         this->set_board(s->b);
+        if (s->cont) {
+            this->focused = true;
+            this->move_focus = s->p;
+        } else {
+            this->focused = false;
+        }
         // Set as blue's turn
-        this->color = false;
+        this->color = !this->bot_color;
         // Check each move that can be applied on this state
         for (Move m : this->moves()) {
             // Try move
             this->apply_move(m);
             // Check if end state has been reached
+            // std::cout << "HELLO" << std::endl;
+            // std::cout << board_to_string(s->b) << std::endl;
+            // std::cout << board_to_string(this->board) << std::endl;
+            // std::cout << board_to_string(bf) << std::endl;
+            // std::cout << "GOODBYE" << std::endl;
+
             if (this->board_equal(this->board, bf)) {
+                for (Bot::State * q : stack) {
+                    delete q;
+                }
+                delete s;
                 return true;
             }
             // If move continues, add subsequent board state to stack
-            if (!this->color) {
+            if (this->color == !this->bot_color) {
                 temp = new State();
                 init_state(temp, this->board, true, m.f);
                 stack.push_back(temp);
             }
+            this->undo_move(m);
         }
         delete s;
     }
@@ -381,9 +411,9 @@ int32_t Bot::evalIII() {
             if (this->board[x][y] == 0)
                 continue;
             if (IS_RED(this->board[x][y]))
-                score += IS_CROWNED(this->board[x][y]) ? 7 : 5 + y;
+                score += IS_CROWNED(this->board[x][y]) ? 7 + y : 5 + y;
             else
-                score -= IS_CROWNED(this->board[x][y]) ? 7 : 5 + (7 - y);
+                score -= IS_CROWNED(this->board[x][y]) ? 7 + (7 - y) : 5 + (7 - y);
         }
     }
     return score;
