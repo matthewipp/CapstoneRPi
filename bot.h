@@ -4,7 +4,6 @@
 #define BOT_CLASS
 
 #include "defs.h"
-#include <cstring>
 #include <vector>
 #include <string>
 #include <cstdint>
@@ -46,8 +45,6 @@ public:
     bool focused = false;
     bool bot_color = true;
     int32_t current_eval;
-    bool tie_breaker[256];
-    uint8_t tie_count = 0;
 
     Bot();
     Bot(uint8_t depth);

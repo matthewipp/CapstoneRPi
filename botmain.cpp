@@ -76,7 +76,7 @@ int main() {
     Bot c;
     q.bot_color = false;
     q.max_depth = 10;
-    g.max_depth = 1;
+    g.max_depth = 6;
     q.evalFunc = &Bot::evalII;
     g.evalFunc = &Bot::evalI;
     bool blue_first = false;
@@ -100,7 +100,7 @@ int main() {
         bnum = std::max(bnum, q.gen_move(g.board));
         c.bot_color = g.bot_color;
         std::cout << "Legal Move: " << c.comp_boards(g.board, q.board) << std::endl;
-        std::cout << board_to_string(q.board);
+        std::cout << board_to_string(q.board) << std::endl;
         std::cout << "Q's Eval: " << q.current_eval << " (" << (int)q.red_count << ", " << (int)q.blue_count << ") " << bnum << '\n' << std::endl;
         blue_first = false;
         // break;

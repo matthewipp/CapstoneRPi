@@ -231,7 +231,7 @@ Bot::Move Bot::calc_move(uint8_t depth, int alpha, int beta) {
     int32_t best_value;
     int32_t value;
     Bot::Move best_move;
-    bool first_tie = true;
+    std::vector<Bot::Move> best_moves;
     if (this->color) {
         best_value = -MAX_INT;
         for (Move move : this->moves()) {
@@ -247,12 +247,11 @@ Bot::Move Bot::calc_move(uint8_t depth, int alpha, int beta) {
             }
             // std::cout << value << std::endl;
             if (value > best_value) {
-                best_move = move;
+                best_moves.clear();
+                best_moves.push_back(move);
                 best_value = value;
-            } else if (value == best_value && (first_tie || this->tie_breaker[this->tie_count++])) {
-                best_move = move;
-                best_value = value;
-                first_tie = false;
+            } else if (value == best_value) {
+                best_moves.push_back(move);
             }
         }
     } else {
@@ -269,18 +268,21 @@ Bot::Move Bot::calc_move(uint8_t depth, int alpha, int beta) {
                 this->focused = false;
             }
             if (value < best_value) {
-                best_move = move;
+                best_moves.clear();
+                best_moves.push_back(move);
                 best_value = value;
-            } else if (value == best_value && (first_tie || this->tie_breaker[this->tie_count++])) {
-                best_move = move;
-                best_value = value;
-                first_tie = false;
+            } else if (value == best_value) {
+                best_moves.push_back(move);
             }
         }
     }
     // std::cout << "Board Eval: " << best_value << std::endl;
     this->current_eval = best_value;
-    return best_move;
+    if (best_moves.size()) {
+        return best_moves[rand() % best_moves.size()];
+    } else {
+        return {{0, 0}, {0, 0}, 0, false, 0, false};
+    }
 }
 
 int Bot::alpha_beta(uint8_t depth, int alpha, int beta) {
@@ -460,10 +462,6 @@ Bot::Bot() {
     }
 
     srand(time(NULL));
-    for (uint8_t i = 1; i >= 1; i++) {
-        this->tie_breaker[i] = (bool)(rand() % 2);
-    }
-    this->tie_breaker[0] = true;
 
     this->red_count = 0;
     this->blue_count = 0;
