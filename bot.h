@@ -67,6 +67,7 @@ public:
     bool board_equal(char b1[8][8], char b2[8][8]);
     bool comp_boards(char bi[8][8], char bf[8][8]);
     void init_state(Bot::State * pS, char b[8][8], bool cont, Bot::Coord p);
+    bool can_cap();
     
     int32_t (Bot::*evalFunc)(void) = &Bot::evalI;
 

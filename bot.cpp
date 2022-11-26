@@ -34,6 +34,13 @@ uint Bot::gen_move(char b[8][8]) {
     return sum;
 }
 
+bool Bot::can_cap() {
+    if (this->moves().size()) {
+        return this->moves()[0].cap;
+    }
+    return false;
+}
+
 /*
 Function for applying Move to board
 */
