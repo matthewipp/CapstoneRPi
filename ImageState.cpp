@@ -83,6 +83,7 @@ bool ImageState::generateBoardstate(cv::Mat& img, bool checkLegalMove) {
     Bot jimmyJr;
     jimmyJr.bot_color = true;
     bool wasLegalMove = jimmyJr.comp_boards(lastValidBoardState, boardState);
+    std::cout << "Jimmy Jr.'s Verdict: " << (wasLegalMove ? "Legal" : "Illegal") << std::endl;
     wasLegalMove = true;
     if(!majorFault && (valid && wasLegalMove || !checkLegalMove)) {
         std::memcpy(lastValidBoardState, boardState, sizeof(boardState));
@@ -309,7 +310,9 @@ bool ImageState::alignCamera(cv::Mat& img) {
         edgeY[1] = tb1 + avgSquareHeight;
     }
     std::cout << "EdgeX: " << edgeX[0] << " to " << edgeX[1] << "\n";
+    std::cout << "Avg. Width: " << avgSquareWidth << "\n";
     std::cout << "EdgeY: " << edgeY[0] << " to " << edgeY[1] << "\n";
+    std::cout << "Avg. Height: " << avgSquareHeight << "\n";
     return true;
 }
 
