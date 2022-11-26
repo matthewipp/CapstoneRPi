@@ -138,6 +138,11 @@ bool Bot::comp_boards(char bi[8][8], char bf[8][8]) {
     Bot::State * s = new State();
     Bot::State * temp;
     init_state(s, bi, false, {0, 0});
+    this->set_board(s->b);
+    this->color = !this->bot_color;
+    if (this->moves().size() == 0) {
+        return this->board_equal(this->board, bf);
+    }
     // std::cout << "Help" << std::endl;
     // std::cout << board_to_string(bi) << std::endl;
     // std::cout << board_to_string(s->b) << std::endl;
