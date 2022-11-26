@@ -83,12 +83,12 @@ class ImageState {
         //CheckersPiece* proposedBoardStatePointer[8][8];
         char lastValidBoardState[8][8];
         bool majorFault = false;
-        std::list<CheckersPiece> redPiecesOnBoard;
-        std::list<CheckersPiece> bluePiecesOnBoard;
-        std::list<CheckersPiece> redPiecesOffBoard;
-        std::list<CheckersPiece> bluePiecesOffBoard;
-        std::list<CheckersPiece> redErrorPiecesOnBoard;
-        std::list<CheckersPiece> blueErrorPiecesOnBoard;
+        std::vector<CheckersPiece> redPiecesOnBoard;
+        std::vector<CheckersPiece> bluePiecesOnBoard;
+        std::vector<CheckersPiece> redPiecesOffBoard;
+        std::vector<CheckersPiece> bluePiecesOffBoard;
+        std::vector<CheckersPiece> redErrorPiecesOnBoard;
+        std::vector<CheckersPiece> blueErrorPiecesOnBoard;
         static const char STARTING_BOARD[8][8];
     private:
         // Turns cluster into piece

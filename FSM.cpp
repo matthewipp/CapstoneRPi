@@ -26,12 +26,10 @@ FSM::FSM() {
 
 void FSM::nextState() {
     char sendFlags = 0;
+    std::cout << (int) currentFlags << std::endl;
     switch(state) {
         case WAIT_FOR_PLAYER:
-            if(currentFlags & FLAG_RECV_NONE) {
-                std::cout << "No flags received\n";
-            }
-            else if(currentFlags & FLAG_RECV_ALIGN) {
+            if(currentFlags & FLAG_RECV_ALIGN) {
                 std::cout << "Aligning\n";
                 cv::Mat img;
                 bool imgSuccess = takePicture(img);
@@ -130,6 +128,9 @@ void FSM::nextState() {
                 else {
                     sendFlags |= FLAG_SEND_MAJOR_FAULT;
                 }
+            }
+            else {
+                std::cout << "No flags received\n";
             }
             break;
         case SEND_MOVES:
