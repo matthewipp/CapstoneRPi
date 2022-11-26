@@ -168,13 +168,14 @@ bool Bot::comp_boards(char bi[8][8], char bf[8][8]) {
             // std::cout << board_to_string(this->board) << std::endl;
             // std::cout << board_to_string(bf) << std::endl;
             // std::cout << "GOODBYE" << std::endl;
-
-            if (this->board_equal(this->board, bf)) {
-                for (Bot::State * q : stack) {
-                    delete q;
+            if (this->color == this->bot_color) {
+                if (this->board_equal(this->board, bf)) {
+                    for (Bot::State * q : stack) {
+                        delete q;
+                    }
+                    delete s;
+                    return true;
                 }
-                delete s;
-                return true;
             }
             // If move continues, add subsequent board state to stack
             if (this->color == !this->bot_color) {
