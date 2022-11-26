@@ -72,7 +72,10 @@ void Comms::sendData(const char* message, int len) {
 #   else 
 
     // NOTE: Requires null-terminated message
-    serialPuts(fd, message);
+    // serialPuts(fd, message);
+    for (int i = 0; i < len; i++) {
+        serialPutchar(fd, message[i]);
+    }
 
 #   endif
 }
