@@ -11,6 +11,8 @@
 
 #include "ImageState.h"
 
+extern int jimmy_depth; // Initialized in main.cpp
+
 // WAIT_FOR_PLAYER waits for player to hit button
 // SEND_MOVES
 enum FSMState {WAIT_FOR_PLAYER, SEND_MOVES};

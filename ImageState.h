@@ -24,6 +24,8 @@
 #define REAL_IMG_OFFSET 1000
 #define REAL_IMG_SQUARE_SIZE 100
 
+extern bool enable_jr;
+
 struct CheckersPiece {
     int x;
     int y;

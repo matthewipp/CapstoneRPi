@@ -21,6 +21,7 @@ FSM::FSM() {
     currentFlags = 0;
     dataSent = true;
     jimmy.evalFunc = &Bot::evalIV;
+    jimmy.max_depth = jimmy_depth;
     lastDataSent = std::chrono::system_clock::now();
 }
 

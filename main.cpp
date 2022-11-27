@@ -16,6 +16,9 @@
 #include "Comms.h"
 #include "ImageState.h"
 
+int jimmy_depth = 10;
+bool enable_jr = true;
+
 void fsmLoop(FSM& fsm, volatile bool& calculating) {
     fsm.runThread();
     calculating = false;
@@ -23,6 +26,12 @@ void fsmLoop(FSM& fsm, volatile bool& calculating) {
 
 int runCheckers(int argc, char** argv) {
     volatile bool calculating = false;
+    if (argc > 1) {
+        jimmy_depth = std::stoi(argv[1]);
+    }
+    if (argc > 2) {
+        enable_jr = (bool) std::stoi(argv[2]);
+    }
     FSM fsm;
     Comms uart;
     std::thread tCalc;
