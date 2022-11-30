@@ -55,8 +55,6 @@ class FSM {
         void setOutput(char flags);
         // sets the output array to the message with a move
         void setOutput(char flags, ImageMove& move);
-        // convert move struct to char array
-        std::string convertMoveToComms(ImageMove& move);
 };
 
 #endif

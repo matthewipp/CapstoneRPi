@@ -180,17 +180,23 @@ void FSM::setOutput(char flags) {
 }
 
 void FSM::setOutput(char flags, ImageMove& move) {
+    int moveStartX = 0;
+    int moveStartY = 0;
+    int moveEndX = 0;
+    int moveEndY = 0;
+    boardState.imageToRealSpace(moveStartX, moveStartY, move.startX, move.startY);
+    boardState.imageToRealSpace(moveEndX, moveEndY, move.endX, move.endY);
     currentOutput[0] = (char)0xFF;
     currentOutput[1] = (char)0xFF;
     currentOutput[2] = flags;
-    currentOutput[3] = (char)(move.startX >> 8);
-    currentOutput[4] = (char)(move.startX);
-    currentOutput[5] = (char)(move.startY >> 8);
-    currentOutput[6] = (char)(move.startY);
-    currentOutput[7] = (char)(move.endX >> 8);
-    currentOutput[8] = (char)(move.endX);
-    currentOutput[9] = (char)(move.endY >> 8);
-    currentOutput[10] = (char)(move.endY);
+    currentOutput[3] = (char)(moveStartX >> 8);
+    currentOutput[4] = (char)(moveStartX);
+    currentOutput[5] = (char)(moveStartY >> 8);
+    currentOutput[6] = (char)(moveStartY);
+    currentOutput[7] = (char)(moveEndX >> 8);
+    currentOutput[8] = (char)(moveEndX);
+    currentOutput[9] = (char)(moveEndY >> 8);
+    currentOutput[10] = (char)(moveEndY);
     dataSent = false;
     outputLength = 11;
 }

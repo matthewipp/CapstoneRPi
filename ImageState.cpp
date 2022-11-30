@@ -641,3 +641,10 @@ void printBoardState(const char boardState[8][8]) {
         std::cout << "\n";
     }
 }
+
+bool ImageState::imageToRealSpace(int& realX, int& realY, int imgX, int imgY) {
+    int relativeX = imgX - edgeX[0];
+    int relativeY = imgY - edgeY[0];
+    realX = (relativeX * REAL_IMG_SQUARE_SIZE) / avgSquareWidth + REAL_IMG_OFFSET;
+    realY = (relativeY * REAL_IMG_SQUARE_SIZE) / avgSquareHeight + REAL_IMG_OFFSET;
+}

@@ -20,6 +20,9 @@
 #define TOP_ROWS 1
 #define BOT_ROWS 2
 
+#define REAL_IMG_OFFSET 1000
+#define REAL_IMG_SQUARE_SIZE 100
+
 struct CheckersPiece {
     int x;
     int y;
@@ -65,6 +68,8 @@ class ImageState {
         void createMoveList(std::list<ImageMove>& moveList);
         // Returns moves to create given boardstate
         void createMoveList(std::list<ImageMove>& moveList, const char desiredBoard[8][8]);
+        // Returns whether coordinate is in correct range and converts coordinates to real space
+        bool imageToRealSpace(int& realX, int& realY, int imgX, int imgY);
         std::vector<cv::Point2f> boardCorners;
         bool isValidState = false;
         // 0 is lower valued edge
