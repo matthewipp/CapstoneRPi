@@ -189,14 +189,14 @@ void FSM::setOutput(char flags, ImageMove& move) {
     currentOutput[0] = (char)0xFF;
     currentOutput[1] = (char)0xFF;
     currentOutput[2] = flags;
-    currentOutput[3] = (char)(moveStartX >> 8);
-    currentOutput[4] = (char)(moveStartX);
-    currentOutput[5] = (char)(moveStartY >> 8);
-    currentOutput[6] = (char)(moveStartY);
-    currentOutput[7] = (char)(moveEndX >> 8);
-    currentOutput[8] = (char)(moveEndX);
-    currentOutput[9] = (char)(moveEndY >> 8);
-    currentOutput[10] = (char)(moveEndY);
+    currentOutput[3] = (char)(moveStartX);
+    currentOutput[4] = (char)(moveStartX >> 8);
+    currentOutput[5] = (char)(moveStartY);
+    currentOutput[6] = (char)(moveStartY >> 8);
+    currentOutput[7] = (char)(moveEndX);
+    currentOutput[8] = (char)(moveEndX >> 8);
+    currentOutput[9] = (char)(moveEndY);
+    currentOutput[10] = (char)(moveEndY >> 8);
     dataSent = false;
     outputLength = 11;
 }
