@@ -231,7 +231,7 @@ int runCheckers(int argc, char** argv) {
         if(uart.isConnected()) {
             newData = uart.checkData(flags);
             // Run FSM if new data received
-            if(newData) {
+            if(newData && fsm.dataSent) {
                 if(!calculating) {
                     calculating = true;
                     fsm.currentFlags = flags;
@@ -243,7 +243,15 @@ int runCheckers(int argc, char** argv) {
             else {
                 if(!calculating && !fsm.dataSent) {
                     uart.sendData(fsm.currentOutput, fsm.outputLength);
+                    fsm.lastDataSent = std::chrono::system_clock::now();
                     fsm.dataSent = true;
+                }
+                else {
+                    std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
+                    std::chrono::duration<double> diff = now - fsm.lastDataSent;
+                    if(diff > 1.0d) {
+                        fsm.setOutput(FLAG_SEND_PING);
+                    }
                 }
             }
         }

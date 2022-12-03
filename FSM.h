@@ -28,6 +28,7 @@ enum FSMState {WAIT_FOR_PLAYER, SEND_MOVES};
 #define FLAG_SEND_MAJOR_FAULT 0x08
 #define FLAG_SEND_ILLEGAL_MOVE 0x10
 
+#include <chrono>
 #include "ImageState.h"
 #include "bot.h"
 
@@ -46,6 +47,7 @@ class FSM {
         std::list<ImageMove> moveList;
         bool dataSent;
         Bot jimmy;
+        std::chrono::system_clock::time_point lastDataSent;
     private:
         // Calculates the next state
         void nextState();

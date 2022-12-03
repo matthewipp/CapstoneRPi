@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <list>
+#include <chrono>
 #include <opencv2/opencv.hpp>
 #include "FSM.h"
 #include "ImageState.h"
@@ -20,6 +21,7 @@ FSM::FSM() {
     currentFlags = 0;
     dataSent = true;
     jimmy.evalFunc = &Bot::evalIV;
+    lastDataSent = std::chrono::system_clock::now();
 }
 
 void FSM::nextState() {
