@@ -48,13 +48,13 @@ class FSM {
         bool dataSent;
         Bot jimmy;
         std::chrono::system_clock::time_point lastDataSent;
+        // sets the output array to the message
+        void setOutput(char flags);
     private:
         // Calculates the next state
         void nextState();
         // Switches state, should only be run when running thread is about to sleep
         void outputState();
-        // sets the output array to the message
-        void setOutput(char flags);
         // sets the output array to the message with a move
         void setOutput(char flags, ImageMove& move);
 };
