@@ -647,4 +647,5 @@ bool ImageState::imageToRealSpace(int& realX, int& realY, int imgX, int imgY) {
     int relativeY = imgY - edgeY[0];
     realX = (relativeX * REAL_IMG_SQUARE_SIZE) / avgSquareWidth + REAL_IMG_OFFSET;
     realY = (relativeY * REAL_IMG_SQUARE_SIZE) / avgSquareHeight + REAL_IMG_OFFSET;
+    return true;
 }
