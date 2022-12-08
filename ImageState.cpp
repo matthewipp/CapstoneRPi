@@ -325,6 +325,12 @@ cv::Point2i ImageState::getBoardPos(CheckersPiece& p) {
     while(p.imageY > edgeY[0] + (pos.y+1)*avgSquareHeight) {
         pos.y++;
     }
+    // Check if pos is too far
+    if(pos.x > 7 || pos.y > 7) {
+        pos.x= -1;
+        pos.y = -1;
+        return pos;
+    }
     // Check distance, if too far, return -1
     // The calculated value is always larger than p.x or p.y
     // Must be in the middle 3/5 of the board
