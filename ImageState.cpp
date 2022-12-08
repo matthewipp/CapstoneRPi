@@ -83,6 +83,7 @@ bool ImageState::generateBoardstate(cv::Mat& img, bool checkLegalMove) {
     Bot jimmyJr;
     jimmyJr.bot_color = true;
     bool wasLegalMove = jimmyJr.comp_boards(lastValidBoardState, boardState);
+    wasLegalMove = true;
     if(!majorFault && (valid && wasLegalMove || !checkLegalMove)) {
         std::memcpy(lastValidBoardState, boardState, sizeof(boardState));
         return true;
@@ -574,7 +575,7 @@ bool ImageState::findEmptySpotOffBoard(ImageMove& move, IncorrectSquare& s) {
     for(int i = 0; i < RIGHT_COLS && !found; i++) {
         for(int j = 0; j < 8 && !found; j++) {
             bool empty = true;
-            int sX = edgeX[1] - avgSquareWidth * i - (avgSquareWidth/2);
+            int sX = edgeX[0] - avgSquareWidth * i - (avgSquareWidth/2);
             int sY = edgeY[0] + avgSquareHeight * j + (avgSquareHeight/2);
             for(CheckersPiece rp : redPiecesOffBoard) {
                 if((rp.imageX - sX)*(rp.imageX - sX)+(rp.imageY - sY)*(rp.imageY - sY) < minSquareDist) {
