@@ -12,7 +12,7 @@
 #include "ImageState.h"
 #include "Cluster.h"
 #include "PieceRecognition.h"
-#include "Bot.h"
+#include "bot.h"
 
 const char ImageState::STARTING_BOARD[8][8] = {{ 0 ,'r', 0 , 0 , 0 ,'b', 0 ,'b'},
                                                {'r', 0 ,'r', 0 , 0 , 0 ,'b', 0 },

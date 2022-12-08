@@ -522,6 +522,13 @@ bool Bot::checkMoves(char p, int8_t dir, Bot::Coord pos) {
     uint8_t x = pos.x;
     uint8_t y = pos.y;
 
+    if (this->color && y == 7) {
+        dir = 0;
+    }
+    if (!this->color && y == 0) {
+        dir = 0;
+    }
+
     for (int8_t yDiff = -1; yDiff <= 1; yDiff += 2) {
         if (yDiff > dir + 1 || yDiff < dir - 1) 
             continue;
