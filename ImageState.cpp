@@ -266,7 +266,7 @@ bool ImageState::alignCamera(cv::Mat& img) {
             }
             // Check if corner is not on the bottom
             if(i % cornerHeight != 6) {
-                heightSum += corners[i+cornerWidth].y - corners[i].y;     
+                heightSum += corners[i+1].y - corners[i].y;     
             }
             else {
                 botSum += corners[i].y;
