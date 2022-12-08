@@ -135,6 +135,7 @@ void FSM::nextState() {
             break;
         case SEND_MOVES:
             if(currentFlags & FLAG_RECV_DONE) {
+                std::cout << "movelist.size(): " << (int)moveList.size() << "\n";
                 if(moveList.size() == 0) {
                     sendFlags |= FLAG_SEND_WAIT_HOME;
                     tempNextState = WAIT_FOR_PLAYER;
