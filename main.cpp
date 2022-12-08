@@ -242,6 +242,7 @@ int runCheckers(int argc, char** argv) {
             }
             else {
                 if(!calculating && !fsm.dataSent) {
+                    std::cout << "Sent Move\n";
                     uart.sendData(fsm.currentOutput, fsm.outputLength);
                     fsm.lastDataSent = std::chrono::system_clock::now();
                     fsm.dataSent = true;
