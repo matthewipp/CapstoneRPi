@@ -254,7 +254,7 @@ int runCheckers(int argc, char** argv) {
                 else {
                     std::chrono::system_clock::time_point now = std::chrono::system_clock::now();
                     std::chrono::duration<double> diff = now - fsm.lastDataSent;
-                    if(diff.count() > 1.0d) {
+                    if(diff.count() > 0.3d) {
                         fsm.setOutput(FLAG_SEND_PING);
                     }
                 }

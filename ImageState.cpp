@@ -391,7 +391,8 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
         if(!shouldBeBlue) {
             for(CheckersPiece& ecp : redErrorPiecesOnBoard) {
                 if(ecp.isKing == shouldBeKing) {
-                    s.matchedPiece = &ecp;
+                    // Still need to finish this
+                    //s.matchedPiece = &ecp;
                     break;
                 }
             }
@@ -402,7 +403,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
                 // Piece can be matched
                 s.matchedPiece = sTarget.occupiedPiece;
                 sTarget.matchedPiece = sTarget.occupiedPiece;
-                if(s.occupiedPiece != nullptr) {
+                if(s.occupiedPiece != nullptr && std::find(matchedPieces.begin(), matchedPieces.end(), s.occupiedPiece) != matchedPieces.end()) {
                     // If target square has piece already, then remove it first
                     ImageMove premove;
                     bool foundSpot = findEmptySpotOffBoard(premove, sTarget);
@@ -410,6 +411,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
                         majorFault = true;
                         return;
                     }
+                    // TODO: Remove moved piece from list
                     std::cout << "Removed piece first\n";
                     moveList.push_back(premove);
                 }
@@ -417,6 +419,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
                 move.startX = sTarget.occupiedPiece->imageX;
                 move.startY = sTarget.occupiedPiece->imageY;
                 getSquareCoords(move.endX, move.endY, s.x, s.y);
+                matchedPieces.push_back(sTarget.occupiedPiece);
                 moveList.push_back(move);
                 break;
             }
