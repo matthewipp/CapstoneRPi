@@ -12,6 +12,7 @@
 #include "ImageState.h"
 #include "Cluster.h"
 #include "PieceRecognition.h"
+#include "Bot.h"
 
 const char ImageState::STARTING_BOARD[8][8] = {{ 0 ,'r', 0 , 0 , 0 ,'b', 0 ,'b'},
                                                {'r', 0 ,'r', 0 , 0 , 0 ,'b', 0 },
@@ -79,7 +80,9 @@ bool ImageState::generateBoardstate(cv::Mat& img, bool checkLegalMove) {
     bool valid = generateBoardState(redClusters, blueClusters);
     isValidState = valid;
     // check if the move was legal here
-    bool wasLegalMove = comp_boards(lastValidBoardState, boardState);
+    Bot jimmyJr;
+    jimmyJr.color = false;
+    bool wasLegalMove = jimmyJr.comp_boards(lastValidBoardState, boardState);
     if(!majorFault && (valid && wasLegalMove || !checkLegalMove)) {
         std::memcpy(lastValidBoardState, boardState, sizeof(boardState));
         return true;
