@@ -109,6 +109,7 @@ void FSM::nextState() {
                         printBoardState(boardState.boardState);
                         std::cout << "Number of boards analyzed: "<< jimmy.gen_move(boardState.boardState) << std::endl;
                         printBoardState(jimmy.board);
+                        std::memcpy(boardState.lastValidBoardState, jimmy.board, sizeof(jimmy.board));
                         // std::cout << jimmy.eval() << '\n' << std::endl;
                         boardState.createMoveList(moveList, jimmy.board);
                         std::cout << "Moves to make: " << (int)moveList.size() << std::endl;
