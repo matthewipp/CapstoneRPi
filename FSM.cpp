@@ -62,9 +62,11 @@ void FSM::nextState() {
                         }
                         else if(moveList.size() == 0) {
                             tempNextState = WAIT_FOR_PLAYER;
+                            std::memcpy(boardState.lastValidBoardState, boardState.STARTING_BOARD, sizeof(boardState.STARTING_BOARD));
                         }
                         else {
                             sendFlags |= FLAG_SEND_MOVE;
+                            std::memcpy(boardState.lastValidBoardState, boardState.STARTING_BOARD, sizeof(boardState.STARTING_BOARD));
                         }
                     }
                     else {
