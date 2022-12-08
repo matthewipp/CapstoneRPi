@@ -158,7 +158,7 @@ void FSM::outputState() {
             }
             break;
         case SEND_MOVES:
-            if(moveList.size() > 0) {
+            if(moveList.size() > 0 && (outputFlags & FLAG_SEND_MOVE)) {
                 setOutput(outputFlags, moveList.front());
                 moveList.pop_front();
             }
