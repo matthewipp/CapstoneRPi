@@ -53,7 +53,6 @@ void FSM::nextState() {
                 bool imgSuccess = takePicture(img);
                 if(imgSuccess) {
                     bool boardSuccess = boardState.generateBoardstate(img, false);
-                    tempNextState = WAIT_FOR_PLAYER;
                     if(boardSuccess) {
                         boardState.createMoveList(moveList);
                         std::cout << "Move list created\n";
