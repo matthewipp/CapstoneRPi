@@ -27,6 +27,7 @@ enum FSMState {WAIT_FOR_PLAYER, SEND_MOVES};
 #define FLAG_SEND_MOVE 0x04
 #define FLAG_SEND_MAJOR_FAULT 0x08
 #define FLAG_SEND_ILLEGAL_MOVE 0x10
+#define FLAG_SEND_CAN_CAPTURE 0x20
 
 #include <chrono>
 #include "ImageState.h"

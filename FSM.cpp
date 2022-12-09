@@ -124,9 +124,16 @@ void FSM::nextState() {
                             tempNextState = WAIT_FOR_PLAYER;
                         }
                         else if(moveList.size() == 0) {
+                            sendFlags |= FLAG_SEND_WAIT_HOME;
+                            if(jimmy.can_cap()) {
+                                sendFlags |= FLAG_SEND_CAN_CAPTURE;
+                            }
                             tempNextState = WAIT_FOR_PLAYER;
                         }
                         else {
+                            if(jimmy.can_cap()) {
+                                sendFlags |= FLAG_SEND_CAN_CAPTURE;
+                            }
                             sendFlags |= FLAG_SEND_MOVE;
                         }
                     }
