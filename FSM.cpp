@@ -100,7 +100,7 @@ void FSM::nextState() {
                             std::cout << "Error generating moves\n";
                         }
                         else if(moveList.size() == 0) {
-                            sendFlags == FLAG_SEND_WAIT_HOME;
+                            sendFlags |= FLAG_SEND_WAIT_HOME;
                             tempNextState = WAIT_FOR_PLAYER;
                         }
                         else {
