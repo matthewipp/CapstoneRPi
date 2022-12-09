@@ -88,22 +88,26 @@ void FSM::nextState() {
                     bool boardSuccess = boardState.generateBoardstate(img);
                     if(boardState.majorFault) {
                         // Big uh oh do nothing
-                        sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                        sendFlags |= FLAG_SEND_MAJOR_FAULT | FLAG_SEND_WAIT_HOME;
+                        tempNextState = WAIT_FOR_PLAYER;
                     }
                     else if(!boardSuccess) {
                         // Go back to previous good board
                         boardState.createMoveList(moveList, boardState.lastValidBoardState);
                         if(boardState.majorFault) {
-                            sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                            sendFlags |= FLAG_SEND_MAJOR_FAULT  | FLAG_SEND_WAIT_HOME;
                             tempNextState = WAIT_FOR_PLAYER;
+                            std::cout << "Error generating moves\n";
                         }
                         else if(moveList.size() == 0) {
+                            sendFlags == FLAG_SEND_WAIT_HOME;
                             tempNextState = WAIT_FOR_PLAYER;
                         }
                         else {
+                            std::cout << "Incorrect Move or invalid piece detected\n";
                             sendFlags |= FLAG_SEND_MOVE;
+                            sendFlags |= FLAG_SEND_ILLEGAL_MOVE;
                         }
-                        std::cout << "Error reading board\n";
                     }
                     else {
                         // Generate computer move
