@@ -96,7 +96,7 @@ void FSM::nextState() {
                         boardState.createMoveList(moveList, boardState.lastValidBoardState);
                         if(boardState.majorFault) {
                             sendFlags |= FLAG_SEND_MAJOR_FAULT | FLAG_SEND_WAIT_HOME;
-                            tempNextState = WAIT_FOR_PLAYER;
+                            tempNextState = WAIT_FOR_PLAYER
                             std::cout << "Error generating moves\n";
                         }
                         else if(moveList.size() == 0) {
