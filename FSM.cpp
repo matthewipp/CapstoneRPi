@@ -129,9 +129,6 @@ void FSM::nextState() {
                             tempNextState = WAIT_FOR_PLAYER;
                         }
                         else {
-                            if(jimmy.can_cap()) {
-                                sendFlags |= FLAG_SEND_CAN_CAPTURE;
-                            }
                             sendFlags |= FLAG_SEND_MOVE;
                         }
                     }
@@ -164,7 +161,7 @@ void FSM::nextState() {
 void FSM::outputState() {
     switch(tempNextState) {
         case WAIT_FOR_PLAYER:
-            if(jimmy.can_cap()) {
+            if(jimmy.can_cap() && state == SEND_MOVES) {
                 outputFlags |= FLAG_SEND_CAN_CAPTURE;
             }
             if(outputFlags) {
