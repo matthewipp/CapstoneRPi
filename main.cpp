@@ -247,6 +247,9 @@ int runCheckers(int argc, char** argv) {
                     if(FLAG_SEND_MAJOR_FAULT & fsm.currentOutput[2]) {
                         std::cout << "Major Fault\n";
                     }
+                    if(FLAG_SEND_WAIT_HOME & fsm.currentOutput[2]) {
+                        std::cout << "Sent Wait Home\n"
+                    }
                     uart.sendData(fsm.currentOutput, fsm.outputLength);
                     fsm.lastDataSent = std::chrono::system_clock::now();
                     fsm.dataSent = true;
