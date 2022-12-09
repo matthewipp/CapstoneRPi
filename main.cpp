@@ -250,7 +250,9 @@ int runCheckers(int argc, char** argv) {
                     if(FLAG_SEND_WAIT_HOME & fsm.currentOutput[2]) {
                         std::cout << "Sent Wait Home\n";
                     }
-                    if(FLAG_SEND_CAN_CAPTURE & fsm.currentOutput[2])
+                    if(FLAG_SEND_CAN_CAPTURE & fsm.currentOutput[2]) {
+                        std::cout << "Sent Can Capture Flag";
+                    }
                     uart.sendData(fsm.currentOutput, fsm.outputLength);
                     fsm.lastDataSent = std::chrono::system_clock::now();
                     fsm.dataSent = true;
