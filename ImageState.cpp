@@ -73,6 +73,10 @@ bool ImageState::generateBoardstate(cv::Mat& img, bool checkLegalMove) {
     std::vector<Point> redPoints = points.back();
     points.pop_back();
     // Clusterize
+    std::cout << "Total points: " << bluePoints.size() + redPoints.size() << "\n";
+    if(bluePoints.size() + redPoints.size() > 10000) {
+        
+    }
     std::vector<Cluster> blueClusters;
     clusterize(bluePoints, true, blueClusters);
     std::vector<Cluster> redClusters;
