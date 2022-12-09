@@ -38,7 +38,7 @@ class Cluster {
         bool checkRange(Point& p1);
         // Finalizes cluster and returns true or false depending
         // on whether cluster is likely a piece
-        bool finalize();
+        bool finalize(int minX, int minY, int maxX, int maxY);
         // Variables
         int red;
         int blue;

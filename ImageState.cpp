@@ -78,9 +78,13 @@ bool ImageState::generateBoardstate(cv::Mat& img, bool checkLegalMove) {
         return false;
     }
     std::vector<Cluster> blueClusters;
-    clusterize(bluePoints, true, blueClusters);
+    int minX = edgeX[0] - (113 * avgSquareWidth) / 100;
+    int minY = edgeY[0] - (154 * avgSquareHeight) / 100;
+    int maxX = edgeX[1] + (170 * avgSquareWidth) / 100;
+    int maxY = edgeY[1] + (170 * avgSquareWidth) / 100;
+    clusterize(bluePoints, true, blueClusters, minX, minY, maxX, maxY);
     std::vector<Cluster> redClusters;
-    clusterize(redPoints, false, redClusters);
+    clusterize(redPoints, false, redClusters, minX, minY, maxX, maxY);
     bool valid = generateBoardState(redClusters, blueClusters);
     isValidState = valid;
     // check if the move was legal here

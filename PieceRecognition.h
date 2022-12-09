@@ -23,7 +23,7 @@
 // Returns list of points for both red and blue pieces
 void getPointsInImage(cv::Mat& img, std::vector<std::vector<Point>>& pointsList);
 // Turns list of Points into list of clusters
-void clusterize(std::vector<Point>& pList, bool isBlue, std::vector<Cluster>& finalClusters);
+void clusterize(std::vector<Point>& pList, bool isBlue, std::vector<Cluster>& finalClustersint, int minX, int minY, int maxX, int maxY);
 // Tale picture
 bool takePicture(cv::Mat& img);
 

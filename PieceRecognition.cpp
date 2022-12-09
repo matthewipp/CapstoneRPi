@@ -75,7 +75,7 @@ void getPointsInImage(cv::Mat& img, std::vector<std::vector<Point>>& pointsList)
     return;
 }
 
-void clusterize(std::vector<Point>& pList, bool isBlue, std::vector<Cluster>& finalClusters) {
+void clusterize(std::vector<Point>& pList, bool isBlue, std::vector<Cluster>& finalClusters, int minX, int minY, int maxX, int maxY) {
     std::vector<Cluster> clusters;
     for(Point& p : pList) {
         // Go through all clusters and stop after finding one
@@ -96,7 +96,7 @@ void clusterize(std::vector<Point>& pList, bool isBlue, std::vector<Cluster>& fi
     }
     // Finish cluster calculation
     for(Cluster& c : clusters) {
-        c.finalize();
+        c.finalize(minX, minY, maxX, maxY);
         if(c.isValid && c.isBlue == isBlue) {
             finalClusters.push_back(c);
         }

@@ -60,7 +60,7 @@ bool Cluster::checkRange(Point& p1) {
     return found;
 }
 
-bool Cluster::finalize() {
+bool Cluster::finalize(int minX, int minY, int maxX, int maxY) {
     // Check total number of points
     int totalPoints = red + blue + yellow;
     if(totalPoints < CLUSTER_MIN_POINTS) {
@@ -92,6 +92,9 @@ bool Cluster::finalize() {
     // Calculate center
     x = xSum / totalPoints;
     y = ySum / totalPoints;
+    if(x < minX || x > maxX || y < minY || y > maxY) {
+        return false;
+    } 
     isValid = true;
     return true;
 }
