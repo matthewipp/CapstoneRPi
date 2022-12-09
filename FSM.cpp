@@ -53,6 +53,7 @@ void FSM::nextState() {
                 bool imgSuccess = takePicture(img);
                 if(imgSuccess) {
                     bool boardSuccess = boardState.generateBoardstate(img, false);
+                    jimmy.init_board();
                     if(boardSuccess) {
                         boardState.createMoveList(moveList);
                         std::cout << "Move list created\n";
@@ -125,9 +126,6 @@ void FSM::nextState() {
                         }
                         else if(moveList.size() == 0) {
                             sendFlags |= FLAG_SEND_WAIT_HOME;
-                            if(jimmy.can_cap()) {
-                                sendFlags |= FLAG_SEND_CAN_CAPTURE;
-                            }
                             tempNextState = WAIT_FOR_PLAYER;
                         }
                         else {
@@ -166,6 +164,9 @@ void FSM::nextState() {
 void FSM::outputState() {
     switch(tempNextState) {
         case WAIT_FOR_PLAYER:
+            if(jimmy.can_cap()) {
+                outputFlags |= FLAG_SEND_CAN_CAPTURE;
+            }
             if(outputFlags) {
                 setOutput(outputFlags);
             }
