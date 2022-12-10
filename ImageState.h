@@ -9,6 +9,7 @@
 #ifndef IMAGE_STATE_H
 #define IMAGE_STATE_H
 
+#include <algorithm>
 #include <opencv2/opencv.hpp>
 #include <vector>
 #include <list>
