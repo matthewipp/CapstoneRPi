@@ -445,14 +445,14 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
                     bool foundSpot = findEmptySpotOffBoard(premove, *(s.occupiedPiece));
                     if(!foundSpot) {
                         majorFault = true;
-                        std::cout << "ERROR: Unable to ind empty spot for replaced piece\n";
+                        std::cout << "ERROR: Unable to find empty spot for replaced piece\n";
                         return;
                     }
                     if(sTarget.occupiedPiece->isBlue) {
-                        removeFromBoard(bluePiecesOnBoard, *(sTarget.occupiedPiece));
+                        removeFromBoard(bluePiecesOnBoard, *(s.occupiedPiece));
                     }
                     else {
-                        removeFromBoard(redPiecesOnBoard, *(sTarget.occupiedPiece));
+                        removeFromBoard(redPiecesOnBoard, *(s.occupiedPiece));
                     }
                     std::cout << "Removed piece first\n";
                     moveList.push_back(premove);
@@ -784,5 +784,5 @@ void ImageState::removeFromBoard(std::list<CheckersPiece> originalList, Checkers
     if(bluePiecesOffBoard.back().isKing) {
         after -= 32;
     }
-    std::cout << "Entering remove from board: " << before << "\n";
+    std::cout << "Exiting remove from board: " << after << "\n";
 }
