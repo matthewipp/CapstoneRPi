@@ -6,10 +6,11 @@
  * @date 2022-10-19
  */
 
+#include "ImageState.h"
+#include <algorithm>
 #include <opencv2/opencv.hpp>
 #include <vector>
 #include <string>
-#include "ImageState.h"
 #include "Cluster.h"
 #include "PieceRecognition.h"
 #include "bot.h"
