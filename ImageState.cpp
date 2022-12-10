@@ -424,7 +424,6 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
         bool filled = false;
         bool shouldBeBlue = false;
         bool shouldBeKing = false;
-        std::cout << "Desired Piece: " << desiredBoard[s.x][s.y] << "\n";
         if(desiredBoard[s.x][s.y] == 'b' || desiredBoard[s.x][s.y] == 'B') {
             shouldBeBlue = true;
         }
@@ -432,17 +431,6 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
             shouldBeKing = true;
         }
         for(IncorrectSquare& sTarget : shouldBeEmpty) {
-            char extra;
-            if(sTarget.occupiedPiece->isBlue) {
-                extra = 'b';
-            }
-            else {
-                extra = 'r';
-            }
-            if(sTarget.occupiedPiece->isKing) {
-                extra -= 32;
-            }
-            std::cout << "Extra piece: " << extra << "\n";
             if(sTarget.occupiedPiece->isBlue == shouldBeBlue && 
                         sTarget.occupiedPiece->isKing == shouldBeKing && sTarget.matchedPiece == nullptr) {
                 // Piece can be matched
