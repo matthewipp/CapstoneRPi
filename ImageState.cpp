@@ -452,7 +452,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
                 if(s.occupiedPiece != nullptr) {
                     // If target square has piece already, then remove it first
                     ImageMove premove;
-                    bool foundSpot = findEmptySpotOffBoard(premove, *(sTarget.occupiedPiece));
+                    bool foundSpot = findEmptySpotOffBoard(premove, *(s.occupiedPiece));
                     if(!foundSpot) {
                         majorFault = true;
                         return;
