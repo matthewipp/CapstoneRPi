@@ -113,7 +113,6 @@ void FSM::nextState() {
                     else {
                         // Generate computer move
                         std::cout << "Generating Move\n";
-                        printBoardState(boardState.boardState);
                         std::cout << "Number of boards analyzed: "<< jimmy.gen_move(boardState.boardState) << std::endl;
                         printBoardState(jimmy.board);
                         std::memcpy(boardState.lastValidBoardState, jimmy.board, sizeof(jimmy.board));

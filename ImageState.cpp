@@ -100,6 +100,7 @@ bool ImageState::generateBoardstate(cv::Mat& img, bool checkLegalMove) {
     bool wasLegalMove = jimmyJr.comp_boards(lastValidBoardState, boardState);
     std::cout << "Jimmy Jr.'s Verdict: " << (wasLegalMove ? "Legal" : "Illegal") << std::endl;
     //wasLegalMove = true;
+    printBoardState(boardState);
     if(!majorFault && (valid && wasLegalMove || !checkLegalMove)) {
         std::memcpy(lastValidBoardState, boardState, sizeof(boardState));
         return true;
