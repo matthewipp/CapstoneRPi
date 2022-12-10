@@ -705,7 +705,7 @@ bool ImageState::findPieceFromOffBoard(ImageMove& move, IncorrectSquare& s, char
             }
         }
         if(found) {
-            addPieceToBoard(bluePiecesOnBoard, chosen);
+            addPieceToBoard(bluePiecesOffBoard, chosen);
         }
     }
     return found;
@@ -747,6 +747,9 @@ void ImageState::addPieceToBoard(std::list<CheckersPiece> originalList, Checkers
     auto it = std::find(originalList.begin(), originalList.end(), piece);
     if(it != originalList.end()) {
         originalList.erase(it);
+    }
+    else {
+        std::cout << "Could not erase from original off board list\n";
     }
 }
 
