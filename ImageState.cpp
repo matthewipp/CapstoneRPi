@@ -475,6 +475,12 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
                 std::cout << "ERROR: Unable to remove an inaccurate piece\n";
                 return;
             }
+            if(s.occupiedPiece->isBlue) {
+                removeFromBoard(bluePiecesOnBoard, *(s.occupiedPiece));
+            }
+            else {
+                removeFromBoard(redPiecesOnBoard, *(s.occupiedPiece));
+            }
             moveList.push_back(move);
         }
     }
