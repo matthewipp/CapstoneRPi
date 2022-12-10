@@ -738,6 +738,7 @@ bool ImageState::imageToRealSpace(int& realX, int& realY, int imgX, int imgY) {
 }
 
 void ImageState::addPieceToBoard(std::list<CheckersPiece> originalList, CheckersPiece& piece) {
+    std::cout << "Added piece\n";
     if(piece.isBlue) {
         bluePiecesOnBoard.push_back(piece);
     }
