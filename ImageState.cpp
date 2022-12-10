@@ -464,7 +464,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
         }
     }
     // Remove incorrect unmatched pieces
-    /*for(IncorrectSquare& s : shouldBeEmpty) {
+    for(IncorrectSquare& s : shouldBeEmpty) {
         if(s.matchedPiece == nullptr) {
             // piece has not been matched
             ImageMove move;
@@ -502,7 +502,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
             }
             moveList.push_back(move);
         }
-    }*/
+    }
     for(ImageMove move : moveList) {
         int startX = move.startX;
         int startY = move.startY;
