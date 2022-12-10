@@ -738,7 +738,7 @@ bool ImageState::imageToRealSpace(int& realX, int& realY, int imgX, int imgY) {
 }
 
 void ImageState::addPieceToBoard(std::list<CheckersPiece> originalList, CheckersPiece& piece) {
-    std::cout << "Added piece\n";
+    std::cout << "Added piece: " << (int)originalList.size() << "\n";
     if(piece.isBlue) {
         bluePiecesOnBoard.push_back(piece);
     }
@@ -752,20 +752,10 @@ void ImageState::addPieceToBoard(std::list<CheckersPiece> originalList, Checkers
     else {
         std::cout << "Could not erase from original off board list\n";
     }
+    std::cout << "Done adding piece: " << (int)originalList.size() << "\n";
 }
 
 void ImageState::removeFromBoard(std::list<CheckersPiece> originalList, CheckersPiece piece) {
-    char before;
-    if(piece.isBlue) {
-        before = 'b';
-    }
-    else {
-        before = 'r';
-    }
-    if(piece.isKing) {
-        before -= 32;
-    }
-    std::cout << "Entering remove from board: " << before<< "\n";
     if(piece.isBlue) {
         bluePiecesOffBoard.push_back(piece);
     }
@@ -779,16 +769,4 @@ void ImageState::removeFromBoard(std::list<CheckersPiece> originalList, Checkers
     else {
         std::cout << "Error: could not erase from original list\n";
     }
-
-    char after;
-    if(bluePiecesOffBoard.back().isBlue) {
-        after = 'b';
-    }
-    else {
-        after = 'r';
-    }
-    if(bluePiecesOffBoard.back().isKing) {
-        after -= 32;
-    }
-    std::cout << "Exiting remove from board: " << after << "\n";
 }
