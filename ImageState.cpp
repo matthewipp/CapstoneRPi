@@ -509,8 +509,8 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
             bool foundPiece = findPieceFromOffBoard(move, s, desiredBoard[s.x][s.y]);
             if(!foundPiece) {
                 majorFault = true;
-                std::cout << "Unable to find piece from off board\n";
-                return;
+                std::cout << "ERROR: Unable to find piece from off board\n";
+                //return;
             }
             moveList.push_back(move);
         }
