@@ -33,11 +33,7 @@ struct CheckersPiece {
     bool isKing;
 };
 
-bool operator==(const CheckersPiece& lhs, CheckersPiece& rhs) {
-    bool coordsMatch = (lhs.imageX == rhs.imageX) && (lhs.imageY == rhs.imageY);
-    bool typeMatch = (lhs.isBlue == rhs.isBlue) && (lhs.isKing == rhs.isKing);
-    return coordsMatch && typeMatch;
-}
+bool operator==(const CheckersPiece& lhs, const CheckersPiece& rhs);
 
 struct IncorrectSquare {
     int x;
