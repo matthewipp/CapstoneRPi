@@ -24,12 +24,10 @@ const char ImageState::STARTING_BOARD[8][8] = {{ 0 ,'r', 0 , 0 , 0 ,'b', 0 ,'b'}
                                                { 0 ,'r', 0 , 0 , 0 ,'b', 0 ,'b'},
                                                {'r', 0 ,'r', 0 , 0 , 0 ,'b', 0 }};
 
-namespace std {
-    bool operator==(const CheckersPiece& lhs, CheckersPiece& rhs) {
-        bool coordsMatch = (lhs.imageX == rhs.imageX) && (lhs.imageY == rhs.imageY);
-        bool typeMatch = (lhs.isBlue == rhs.isBlue) && (lhs.isKing == rhs.isKing);
-        return coordsMatch && typeMatch;
-    }
+bool operator==(const CheckersPiece& lhs, CheckersPiece& rhs) {
+    bool coordsMatch = (lhs.imageX == rhs.imageX) && (lhs.imageY == rhs.imageY);
+    bool typeMatch = (lhs.isBlue == rhs.isBlue) && (lhs.isKing == rhs.isKing);
+    return coordsMatch && typeMatch;
 }
 
 int ImageState::countRedKingsOnBoard() {
