@@ -79,11 +79,9 @@ bool ImageState::generateBoardstate(cv::Mat& img, bool checkLegalMove) {
     }
     std::vector<Cluster> blueClusters;
     int minX = edgeX[0] - (113 * avgSquareWidth) / 100;
-    int minY = edgeY[0] - (154 * avgSquareHeight) / 100;
+    int minY = edgeY[0] - (120 * avgSquareHeight) / 100;
     int maxX = edgeX[1] + (185 * avgSquareWidth) / 100;
     int maxY = edgeY[1] + (185 * avgSquareHeight) / 100;
-    std::cout << "Mins and Maxes: (" << minX << ", " << minY << "), (";
-    std::cout << maxX << ", " << maxY << ")\n";
     clusterize(bluePoints, true, blueClusters, minX, minY, maxX, maxY);
     std::vector<Cluster> redClusters;
     clusterize(redPoints, false, redClusters, minX, minY, maxX, maxY);
@@ -111,6 +109,14 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters,
     redPiecesOffBoard.clear();
     bluePiecesOnBoard.clear();
     bluePiecesOffBoard.clear();
+    // Check positions on board
+    // CLear boardstate
+    for(int i = 0; i < 8; i++) {
+        for(int j = 0; j < 8; j++) {
+            boardState[i][j] = 0;
+            boardStatePointer[i][j] = nullptr;
+        }
+    }
     // Red Pieces
     for(Cluster& c : redClusters) {
         CheckersPiece cp;
@@ -122,9 +128,33 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters,
         cp.y = -1;
         cp.onBoard = edgeX[0] < cp.imageX && cp.imageX < edgeX[1] && edgeY[0] < cp.imageY && cp.imageY < edgeY[1];
         if(cp.onBoard)
-            redPiecesOnBoard.push_back(cp);
-        else
+        {
+            cv::Point2i coord = getBoardPos(cp);
+            cp.x = coord.x;
+            cp.y = coord.y;
+            if(coord.x == -1) {
+                // Invalid coordinate
+                success = false;
+                redErrorPiecesOnBoard.push_back(cp);
+            }
+            else if(boardState[coord.x][coord.y] == 0) {
+                if(cp.isKing) {
+                    boardState[coord.x][coord.y] = 'R';
+                } 
+                else {
+                    boardState[coord.x][coord.y] = 'r';
+                }
+                boardStatePointer[coord.x][coord.y] = &cp;
+                redPiecesOnBoard.push_back(cp);
+            } 
+            else {
+                // Two pieces on same spot
+                success = false;
+            }
+        }
+        else{
             redPiecesOffBoard.push_back(cp);
+        }
     }
     // Blue Pieces
     for(Cluster& c : blueClusters) {
@@ -137,64 +167,34 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters,
         cp.y = -1;
         cp.onBoard = edgeX[0] < cp.imageX && cp.imageX < edgeX[1] && edgeY[0] < cp.imageY && cp.imageY < edgeY[1];
         if(cp.onBoard)
-            bluePiecesOnBoard.push_back(cp);
-        else
+        {
+            cv::Point2i coord = getBoardPos(cp);
+            cp.x = coord.x;
+            cp.y = coord.y;
+            if(coord.x == -1) {
+                // Invalid coordinate
+                success = false;
+                blueErrorPiecesOnBoard.push_back(cp);
+            }
+            else if(boardState[coord.x][coord.y] == 0) {
+                if(cp.isKing) {
+                    boardState[coord.x][coord.y] = 'B';
+                } 
+                else {
+                    boardState[coord.x][coord.y] = 'b';
+                }
+                boardStatePointer[coord.x][coord.y] = &cp;
+                bluePiecesOnBoard.push_back(cp);
+            } 
+            else {
+                // Two pieces on same spot
+                success = false;
+            }
+        }
+        else{
             bluePiecesOffBoard.push_back(cp);
-    }
-    // Check positions on board
-    // CLear boardstate
-    for(int i = 0; i < 8; i++) {
-        for(int j = 0; j < 8; j++) {
-            boardState[i][j] = 0;
-            boardStatePointer[i][j] = nullptr;
         }
     }
-    for(CheckersPiece& p : redPiecesOnBoard) {
-        cv::Point2i coord = getBoardPos(p);
-        p.x = coord.x;
-        p.y = coord.y;
-        if(coord.x == -1) {
-            // Invalid coordinate
-            success = false;
-        }
-        else if(boardState[coord.x][coord.y] == 0) {
-            if(p.isKing) {
-                boardState[coord.x][coord.y] = 'R';
-            } 
-            else {
-                boardState[coord.x][coord.y] = 'r';
-            }
-            boardStatePointer[coord.x][coord.y] = &p;
-        } 
-        else {
-            // Two pieces on same spot
-            success = false;
-        }
-    }
-    for(CheckersPiece& p : bluePiecesOnBoard) {
-        cv::Point2i coord = getBoardPos(p);
-        p.x = coord.x;
-        p.y = coord.y;
-        if(coord.x == -1) {
-            // Invalid coordinate
-            success = false;
-        }
-        else if(boardState[coord.x][coord.y] == 0) {
-            if(p.isKing) {
-                boardState[coord.x][coord.y] = 'B';
-            } 
-            else {
-                boardState[coord.x][coord.y] = 'b';
-            }
-            boardStatePointer[coord.x][coord.y] = &p;
-        } 
-        else {
-            // Two pieces on same spot
-            success = false;
-        }
-    }
-    //std::memcpy(proposedBoardState, boardState, sizeof(boardState));
-    //std::memcpy(proposedBoardStatePointer, boardStatePointer, sizeof(boardStatePointer));
     return success;
 }
 
@@ -370,7 +370,6 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
     moveList.clear();
     std::vector<IncorrectSquare> shouldBeEmpty;
     std::vector<IncorrectSquare> shouldBeFilled;
-    std::vector<CheckersPiece*> matchedPieces;
     // Classify incorrect squares
     for(int i = 0; i < 8; i++) {
         for(int j = 0; j < 8; j++) {
@@ -399,8 +398,21 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
     std::cout << "Classified Incorrect Squares\n";
     std::cout << "Should be empty: " << (int)shouldBeEmpty.size() << std::endl;
     std::cout << "Should be filled: " << (int)shouldBeFilled.size() << std::endl;
+    // Try matching error pieces first
+    for(CheckersPiece& cp : redErrorPiecesOnBoard) {
+        ImageMove move;
+        bool foundSpot = findEmptySpotOffBoard(move, cp);
+        if(foundSpot) {
+            moveList.push_back(move);
+        }
+        else {
+            majorFault = true;
+            return;
+        }
+    }
     // Match incorrect squares to pieces
     for(IncorrectSquare& s : shouldBeFilled) {
+        bool filled = false;
         bool shouldBeBlue = false;
         bool shouldBeKing = false;
         if(desiredBoard[s.x][s.y] == 'b' || desiredBoard[s.x][s.y] == 'B') {
@@ -409,31 +421,26 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
         if(desiredBoard[s.x][s.y] == 'R' || desiredBoard[s.x][s.y] == 'B') {
             shouldBeKing = true;
         }
-        // Try matching error pieces first
-        if(!shouldBeBlue) {
-            for(CheckersPiece& ecp : redErrorPiecesOnBoard) {
-                if(ecp.isKing == shouldBeKing) {
-                    // Still need to finish this
-                    //s.matchedPiece = &ecp;
-                    break;
-                }
-            }
-        }
         for(IncorrectSquare& sTarget : shouldBeEmpty) {
             if(sTarget.occupiedPiece->isBlue == shouldBeBlue && 
-                        sTarget.occupiedPiece->isKing == shouldBeKing) {
+                        sTarget.occupiedPiece->isKing == shouldBeKing && sTarget.occupiedPiece) {
                 // Piece can be matched
                 s.matchedPiece = sTarget.occupiedPiece;
                 sTarget.matchedPiece = sTarget.occupiedPiece;
-                if(s.occupiedPiece != nullptr && std::find(matchedPieces.begin(), matchedPieces.end(), s.occupiedPiece) != matchedPieces.end()) {
+                if(s.occupiedPiece != nullptr) {
                     // If target square has piece already, then remove it first
                     ImageMove premove;
-                    bool foundSpot = findEmptySpotOffBoard(premove, sTarget);
+                    bool foundSpot = findEmptySpotOffBoard(premove, *(sTarget.occupiedPiece));
                     if(!foundSpot) {
                         majorFault = true;
                         return;
                     }
-                    // TODO: Remove moved piece from list
+                    if(sTarget.occupiedPiece->isBlue) {
+                        removeFromBoard(bluePiecesOnBoard, *(sTarget.occupiedPiece));
+                    }
+                    else {
+                        removeFromBoard(redPiecesOnBoard, *(sTarget.occupiedPiece));
+                    }
                     std::cout << "Removed piece first\n";
                     moveList.push_back(premove);
                 }
@@ -441,7 +448,6 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
                 move.startX = sTarget.occupiedPiece->imageX;
                 move.startY = sTarget.occupiedPiece->imageY;
                 getSquareCoords(move.endX, move.endY, s.x, s.y);
-                matchedPieces.push_back(sTarget.occupiedPiece);
                 moveList.push_back(move);
                 break;
             }
@@ -452,7 +458,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
         if(s.matchedPiece == nullptr) {
             // piece has not been matched
             ImageMove move;
-            bool foundSpot = findEmptySpotOffBoard(move, s);
+            bool foundSpot = findEmptySpotOffBoard(move, *(s.occupiedPiece));
             if(!foundSpot) {
                 majorFault = true;
                 return;
@@ -465,12 +471,18 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
         if(s.matchedPiece == nullptr) {
             if(s.occupiedPiece != nullptr) {
                 ImageMove premove;
-                    bool foundSpot = findEmptySpotOffBoard(premove, s);
-                    if(!foundSpot) {
-                        majorFault = true;
-                        return;
-                    }
-                    moveList.push_back(premove);
+                bool foundSpot = findEmptySpotOffBoard(premove, *(s.occupiedPiece));
+                if(!foundSpot) {
+                    majorFault = true;
+                    return;
+                }
+                if(s.occupiedPiece->isBlue) {
+                    removeFromBoard(bluePiecesOnBoard, *(s.occupiedPiece));
+                }
+                else {
+                    removeFromBoard(redPiecesOnBoard, *(s.occupiedPiece));
+                }
+                moveList.push_back(premove);
             }
             ImageMove move;
             bool foundPiece = findPieceFromOffBoard(move, s, desiredBoard[s.x][s.y]);
@@ -494,7 +506,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
     }
 }
 
-bool ImageState::findEmptySpotOffBoard(ImageMove& move, IncorrectSquare& s) {
+bool ImageState::findEmptySpotOffBoard(ImageMove& move, CheckersPiece& cp) {
     int minSquareDist = (avgSquareWidth * avgSquareWidth * 49) / 64;
     bool found = false;
     // Check top
@@ -521,8 +533,8 @@ bool ImageState::findEmptySpotOffBoard(ImageMove& move, IncorrectSquare& s) {
             }
             if(empty) {
                 found = true;
-                s.matchedPiece = s.occupiedPiece;
-                getSquareCoords(move.startX, move.startY, s.x, s.y);
+                move.startX = cp.imageX;
+                move.startY = cp.imageY;
                 move.endX = sX;
                 move.endY = sY;
             }
@@ -552,8 +564,10 @@ bool ImageState::findEmptySpotOffBoard(ImageMove& move, IncorrectSquare& s) {
             }
             if(empty) {
                 found = true;
-                s.matchedPiece = s.occupiedPiece;
-                getSquareCoords(move.startX, move.startY, s.x, s.y);
+                move.startX = cp.imageX;
+                move.startY = cp.imageY;
+                cp.imageX = sX;
+                cp.imageY = sY;
                 move.endX = sX;
                 move.endY = sY;
             }
@@ -583,8 +597,10 @@ bool ImageState::findEmptySpotOffBoard(ImageMove& move, IncorrectSquare& s) {
             }
             if(empty) {
                 found = true;
-                s.matchedPiece = s.occupiedPiece;
-                getSquareCoords(move.startX, move.startY, s.x, s.y);
+                move.startX = cp.imageX;
+                move.startY = cp.imageY;
+                cp.imageX = sX;
+                cp.imageY = sY;
                 move.endX = sX;
                 move.endY = sY;
             }
@@ -614,8 +630,10 @@ bool ImageState::findEmptySpotOffBoard(ImageMove& move, IncorrectSquare& s) {
             }
             if(empty) {
                 found = true;
-                s.matchedPiece = s.occupiedPiece;
-                getSquareCoords(move.startX, move.startY, s.x, s.y);
+                move.startX = cp.imageX;
+                move.startY = cp.imageY;
+                cp.imageX = sX;
+                cp.imageY = sY;
                 move.endX = sX;
                 move.endY = sY;
             }
@@ -631,6 +649,7 @@ bool ImageState::findPieceFromOffBoard(ImageMove& move, IncorrectSquare& s, char
         isKing = true;
     }
     if(piece == 'R' || piece == 'r') {
+        CheckersPiece chosen;
         for(CheckersPiece& cp : redPiecesOffBoard) {
             if(cp.isKing == isKing) {
                 found = true;
@@ -638,10 +657,16 @@ bool ImageState::findPieceFromOffBoard(ImageMove& move, IncorrectSquare& s, char
                 move.startX = cp.imageX;
                 move.startY = cp.imageY;
                 getSquareCoords(move.endX, move.endY, s.x, s.y);
+                chosen = cp;
+                break;
             }
+        }
+        if(found) {
+            addPieceToBoard(redPiecesOffBoard, chosen);
         }
     }
     if(piece == 'B' || piece == 'b') {
+        CheckersPiece chosen;
         for(CheckersPiece& cp : bluePiecesOffBoard) {
             if(cp.isKing == isKing) {
                 found = true;
@@ -649,7 +674,12 @@ bool ImageState::findPieceFromOffBoard(ImageMove& move, IncorrectSquare& s, char
                 move.startX = cp.imageX;
                 move.startY = cp.imageY;
                 getSquareCoords(move.endX, move.endY, s.x, s.y);
+                chosen = cp;
+                break;
             }
+        }
+        if(found) {
+            addPieceToBoard(bluePiecesOnBoard, chosen);
         }
     }
     return found;
@@ -679,4 +709,30 @@ bool ImageState::imageToRealSpace(int& realX, int& realY, int imgX, int imgY) {
     realX = (relativeX * REAL_IMG_SQUARE_SIZE) / avgSquareWidth + REAL_IMG_OFFSET;
     realY = (relativeY * REAL_IMG_SQUARE_SIZE) / avgSquareHeight + REAL_IMG_OFFSET;
     return true;
+}
+
+void ImageState::addPieceToBoard(std::list<CheckersPiece> originalList, CheckersPiece& piece) {
+    if(piece.isBlue) {
+        bluePiecesOnBoard.push_back(piece);
+    }
+    else {
+        redPiecesOnBoard.push_back(piece);
+    }
+    auto it = std::find(originalList.begin(), originalList.end(), piece);
+    if(it != originalList.end()) {
+        originalList.erase(it);
+    }
+}
+
+void ImageState::removeFromBoard(std::list<CheckersPiece> originalList, CheckersPiece& piece) {
+    if(piece.isBlue) {
+        bluePiecesOffBoard.push_back(piece);
+    }
+    else {
+        redPiecesOffBoard.push_back(piece);
+    }
+    auto it = std::find(originalList.begin(), originalList.end(), piece);
+    if(it != originalList.end()) {
+        originalList.erase(it);
+    }
 }

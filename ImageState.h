@@ -83,22 +83,25 @@ class ImageState {
         //CheckersPiece* proposedBoardStatePointer[8][8];
         char lastValidBoardState[8][8];
         bool majorFault = false;
-        std::vector<CheckersPiece> redPiecesOnBoard;
-        std::vector<CheckersPiece> bluePiecesOnBoard;
-        std::vector<CheckersPiece> redPiecesOffBoard;
-        std::vector<CheckersPiece> bluePiecesOffBoard;
-        std::vector<CheckersPiece> redErrorPiecesOnBoard;
-        std::vector<CheckersPiece> blueErrorPiecesOnBoard;
+        std::list<CheckersPiece> redPiecesOnBoard;
+        std::list<CheckersPiece> bluePiecesOnBoard;
+        std::list<CheckersPiece> redPiecesOffBoard;
+        std::list<CheckersPiece> bluePiecesOffBoard;
+        std::list<CheckersPiece> redErrorPiecesOnBoard;
+        std::list<CheckersPiece> blueErrorPiecesOnBoard;
         static const char STARTING_BOARD[8][8];
     private:
         // Turns cluster into piece
         void createPieceFromCluster(CheckersPiece& checker, Cluster& cluster);
         // Finds empyt spot off board to place piece
-        bool findEmptySpotOffBoard(ImageMove& move, IncorrectSquare& s);
+        bool findEmptySpotOffBoard(ImageMove& move, CheckersPiece& cp);
         // Find piece from off board
         bool findPieceFromOffBoard(ImageMove& move, IncorrectSquare& s, char piece);
         // Returns coordinates of square
         void getSquareCoords(int& imageX, int& imageY, int squareX, int squareY);
+        // Add piece to board
+        void addPieceToBoard(std::list<CheckersPiece> originalList, CheckersPiece& piece);
+        void removeFromBoard(std::list<CheckersPiece> originalList, CheckersPiece& piece);
 };
 
 void printBoardState(const char boardState[8][8]);
