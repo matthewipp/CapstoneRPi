@@ -152,8 +152,8 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters,
                 else {
                     boardState[coord.x][coord.y] = 'r';
                 }
-                boardStatePointer[coord.x][coord.y] = &cp;
                 redPiecesOnBoard.push_back(cp);
+                boardStatePointer[coord.x][coord.y] = &(redPiecesOnBoard.back());
             } 
             else {
                 // Two pieces on same spot
@@ -191,8 +191,8 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters,
                 else {
                     boardState[coord.x][coord.y] = 'b';
                 }
-                boardStatePointer[coord.x][coord.y] = &cp;
                 bluePiecesOnBoard.push_back(cp);
+                boardStatePointer[coord.x][coord.y] = &(bluePiecesOnBoard.back());
             } 
             else {
                 // Two pieces on same spot
@@ -434,10 +434,10 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
         for(IncorrectSquare& sTarget : shouldBeEmpty) {
             char extra;
             if(sTarget.occupiedPiece->isBlue) {
-                extra = 'r';
+                extra = 'b';
             }
             else {
-                extra = 'b';
+                extra = 'r';
             }
             if(sTarget.occupiedPiece->isKing) {
                 extra -= 32;
