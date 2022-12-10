@@ -423,6 +423,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
         bool filled = false;
         bool shouldBeBlue = false;
         bool shouldBeKing = false;
+        std::cout << "Desired Piece: " << desiredBoard[s.x][s.y] << "\n";
         if(desiredBoard[s.x][s.y] == 'b' || desiredBoard[s.x][s.y] == 'B') {
             shouldBeBlue = true;
         }
