@@ -117,6 +117,8 @@ bool ImageState::generateBoardState(std::vector<Cluster>& redClusters,
     redPiecesOffBoard.clear();
     bluePiecesOnBoard.clear();
     bluePiecesOffBoard.clear();
+    redErrorPiecesOnBoard.clear();
+    blueErrorPiecesOnBoard.clear();
     // Check positions on board
     // CLear boardstate
     for(int i = 0; i < 8; i++) {
