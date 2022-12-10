@@ -26,7 +26,7 @@ FSM::FSM() {
 
 void FSM::nextState() {
     char sendFlags = 0;
-    std::cout << (int) currentFlags << std::endl;
+    //std::cout << (int) currentFlags << std::endl;
     switch(state) {
         case WAIT_FOR_PLAYER:
             if(currentFlags & FLAG_RECV_ALIGN) {
@@ -138,7 +138,7 @@ void FSM::nextState() {
                 }
             }
             else {
-                std::cout << "No flags received\n";
+                //std::cout << "No flags received\n";
             }
             break;
         case SEND_MOVES:
