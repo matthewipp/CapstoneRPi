@@ -104,7 +104,7 @@ class ImageState {
         void getSquareCoords(int& imageX, int& imageY, int squareX, int squareY);
         // Add piece to board
         void addPieceToBoard(std::list<CheckersPiece> originalList, CheckersPiece& piece);
-        void removeFromBoard(std::list<CheckersPiece> originalList, CheckersPiece& piece);
+        void removeFromBoard(std::list<CheckersPiece> originalList, CheckersPiece piece);
 };
 
 void printBoardState(const char boardState[8][8]);
