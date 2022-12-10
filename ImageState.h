@@ -34,7 +34,7 @@ struct CheckersPiece {
     bool isKing;
 };
 
-bool operator==(const CheckersPiece& lhs, const CheckersPiece& rhs);
+bool operator==(CheckersPiece const& lhs, CheckersPiece const& rhs);
 
 struct IncorrectSquare {
     int x;
