@@ -486,25 +486,27 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
             moveList.push_back(move);
         }
     }
+    for(IncorrectSquare& s : shouldBeFilled) {
+        if(s.matchedPiece == nullptr && s.occupiedPiece != nullptr) {
+            ImageMove offMove;
+            bool foundSpot = findEmptySpotOffBoard(offMove, *(s.occupiedPiece));
+            if(!foundSpot) {
+                majorFault = true;
+                std::cout << "ERROR: Unable to find spot for replaced piece from off board\n";
+                return;
+            }
+            if(s.occupiedPiece->isBlue) {
+                removeFromBoard(bluePiecesOnBoard, *(s.occupiedPiece));
+            }
+            else {
+                removeFromBoard(redPiecesOnBoard, *(s.occupiedPiece));
+            }
+            moveList.push_back(offMove);
+        }
+    }
     // Add pieces to board from off board
     for(IncorrectSquare& s : shouldBeFilled) {
         if(s.matchedPiece == nullptr) {
-            if(s.occupiedPiece != nullptr) {
-                ImageMove premove;
-                bool foundSpot = findEmptySpotOffBoard(premove, *(s.occupiedPiece));
-                if(!foundSpot) {
-                    majorFault = true;
-                    std::cout << "ERROR: Unable to find spot for replaced piece from off board\n";
-                    return;
-                }
-                if(s.occupiedPiece->isBlue) {
-                    removeFromBoard(bluePiecesOnBoard, *(s.occupiedPiece));
-                }
-                else {
-                    removeFromBoard(redPiecesOnBoard, *(s.occupiedPiece));
-                }
-                moveList.push_back(premove);
-            }
             ImageMove move;
             bool foundPiece = findPieceFromOffBoard(move, s, desiredBoard[s.x][s.y]);
             if(!foundPiece) {
