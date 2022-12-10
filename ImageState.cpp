@@ -414,6 +414,19 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
         ImageMove move;
         bool foundSpot = findEmptySpotOffBoard(move, cp);
         if(foundSpot) {
+            redPiecesOffBoard.push_back(cp);
+            moveList.push_back(move);
+        }
+        else {
+            majorFault = true;
+            return;
+        }
+    }
+    for(CheckersPiece& cp : blueErrorPiecesOnBoard) {
+        ImageMove move;
+        bool foundSpot = findEmptySpotOffBoard(move, cp);
+        if(foundSpot) {
+            bluePiecesOffBoard.push_back(cp);
             moveList.push_back(move);
         }
         else {
