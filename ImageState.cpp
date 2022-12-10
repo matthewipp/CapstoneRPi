@@ -443,6 +443,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
                     bool foundSpot = findEmptySpotOffBoard(premove, *(s.occupiedPiece));
                     if(!foundSpot) {
                         majorFault = true;
+                        std::cout << "ERROR: Unable to ind empty spot for replaced piece\n";
                         return;
                     }
                     if(sTarget.occupiedPiece->isBlue) {
@@ -471,6 +472,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
             bool foundSpot = findEmptySpotOffBoard(move, *(s.occupiedPiece));
             if(!foundSpot) {
                 majorFault = true;
+                std::cout << "ERROR: Unable to remove an inaccurate piece\n";
                 return;
             }
             moveList.push_back(move);
@@ -484,6 +486,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
                 bool foundSpot = findEmptySpotOffBoard(premove, *(s.occupiedPiece));
                 if(!foundSpot) {
                     majorFault = true;
+                    std::cout << "ERROR: Unable to find spot for replaced piece from off board\n";
                     return;
                 }
                 if(s.occupiedPiece->isBlue) {
@@ -498,6 +501,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
             bool foundPiece = findPieceFromOffBoard(move, s, desiredBoard[s.x][s.y]);
             if(!foundPiece) {
                 majorFault = true;
+                std::cout << "Unable to find piece from off board\n";
                 return;
             }
             moveList.push_back(move);
