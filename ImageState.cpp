@@ -759,4 +759,7 @@ void ImageState::removeFromBoard(std::list<CheckersPiece> originalList, Checkers
     if(it != originalList.end()) {
         originalList.erase(it);
     }
+    else {
+        std::cout << "Error: could not erase from original list\n";
+    }
 }
