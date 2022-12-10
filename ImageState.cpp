@@ -525,7 +525,7 @@ bool ImageState::findEmptySpotOffBoard(ImageMove& move, CheckersPiece& cp) {
             bool empty = true;
             int sX = edgeX[0] + avgSquareWidth * j + (avgSquareWidth/2);
             int sY = edgeY[0] - avgSquareHeight * i - (avgSquareHeight/2);
-            for(CheckersPiece rp : redPiecesOffBoard) {
+            for(CheckersPiece& rp : redPiecesOffBoard) {
                 if((rp.imageX - sX)*(rp.imageX - sX)+(rp.imageY - sY)*(rp.imageY - sY) < minSquareDist) {
                     // Piece occupied
                     empty = false;
@@ -533,7 +533,7 @@ bool ImageState::findEmptySpotOffBoard(ImageMove& move, CheckersPiece& cp) {
                 }
             }
             if(empty) {
-                for(CheckersPiece bp : bluePiecesOffBoard) {
+                for(CheckersPiece& bp : bluePiecesOffBoard) {
                     if((bp.imageX - sX)*(bp.imageX - sX)+(bp.imageY - sY)*(bp.imageY - sY) < minSquareDist) {
                         // Piece occupied
                         empty = false;
@@ -545,6 +545,8 @@ bool ImageState::findEmptySpotOffBoard(ImageMove& move, CheckersPiece& cp) {
                 found = true;
                 move.startX = cp.imageX;
                 move.startY = cp.imageY;
+                cp.imageX = sX;
+                cp.imageY = sY;
                 move.endX = sX;
                 move.endY = sY;
             }
@@ -556,7 +558,7 @@ bool ImageState::findEmptySpotOffBoard(ImageMove& move, CheckersPiece& cp) {
             bool empty = true;
             int sX = edgeX[1] + avgSquareWidth * i + (avgSquareWidth/2);
             int sY = edgeY[0] + avgSquareHeight * j - (avgSquareHeight/2);
-            for(CheckersPiece rp : redPiecesOffBoard) {
+            for(CheckersPiece& rp : redPiecesOffBoard) {
                 if((rp.imageX - sX)*(rp.imageX - sX)+(rp.imageY - sY)*(rp.imageY - sY) < minSquareDist) {
                     // Piece occupied
                     empty = false;
@@ -564,7 +566,7 @@ bool ImageState::findEmptySpotOffBoard(ImageMove& move, CheckersPiece& cp) {
                 }
             }
             if(empty) {
-                for(CheckersPiece bp : bluePiecesOffBoard) {
+                for(CheckersPiece& bp : bluePiecesOffBoard) {
                     if((bp.imageX - sX)*(bp.imageX - sX)+(bp.imageY - sY)*(bp.imageY - sY) < minSquareDist) {
                         // Piece occupied
                         empty = false;
@@ -589,7 +591,7 @@ bool ImageState::findEmptySpotOffBoard(ImageMove& move, CheckersPiece& cp) {
             bool empty = true;
             int sX = edgeX[0] + avgSquareWidth * j + (avgSquareWidth/2);
             int sY = edgeY[1] + avgSquareHeight * i + (avgSquareHeight/2);
-            for(CheckersPiece rp : redPiecesOffBoard) {
+            for(CheckersPiece& rp : redPiecesOffBoard) {
                 if((rp.imageX - sX)*(rp.imageX - sX)+(rp.imageY - sY)*(rp.imageY - sY) < minSquareDist) {
                     // Piece occupied
                     empty = false;
@@ -597,7 +599,7 @@ bool ImageState::findEmptySpotOffBoard(ImageMove& move, CheckersPiece& cp) {
                 }
             }
             if(empty) {
-                for(CheckersPiece bp : bluePiecesOffBoard) {
+                for(CheckersPiece& bp : bluePiecesOffBoard) {
                     if((bp.imageX - sX)*(bp.imageX - sX)+(bp.imageY - sY)*(bp.imageY - sY) < minSquareDist) {
                         // Piece occupied
                         empty = false;
@@ -622,7 +624,7 @@ bool ImageState::findEmptySpotOffBoard(ImageMove& move, CheckersPiece& cp) {
             bool empty = true;
             int sX = edgeX[0] - avgSquareWidth * i - (avgSquareWidth/2);
             int sY = edgeY[0] + avgSquareHeight * j + (avgSquareHeight/2);
-            for(CheckersPiece rp : redPiecesOffBoard) {
+            for(CheckersPiece& rp : redPiecesOffBoard) {
                 if((rp.imageX - sX)*(rp.imageX - sX)+(rp.imageY - sY)*(rp.imageY - sY) < minSquareDist) {
                     // Piece occupied
                     empty = false;
@@ -630,7 +632,7 @@ bool ImageState::findEmptySpotOffBoard(ImageMove& move, CheckersPiece& cp) {
                 }
             }
             if(empty) {
-                for(CheckersPiece bp : bluePiecesOffBoard) {
+                for(CheckersPiece& bp : bluePiecesOffBoard) {
                     if((bp.imageX - sX)*(bp.imageX - sX)+(bp.imageY - sY)*(bp.imageY - sY) < minSquareDist) {
                         // Piece occupied
                         empty = false;
