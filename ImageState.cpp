@@ -431,6 +431,17 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
             shouldBeKing = true;
         }
         for(IncorrectSquare& sTarget : shouldBeEmpty) {
+            char extra;
+            if(sTarget.occupiedPiece->isBlue) {
+                extra = 'r';
+            }
+            else {
+                extra = 'b';
+            }
+            if(sTarget.occupiedPiece->isKing) {
+                extra -= 32;
+            }
+            std::cout << "Extra piece: " << extra << "\n";
             if(sTarget.occupiedPiece->isBlue == shouldBeBlue && 
                         sTarget.occupiedPiece->isKing == shouldBeKing && sTarget.matchedPiece == nullptr) {
                 // Piece can be matched
