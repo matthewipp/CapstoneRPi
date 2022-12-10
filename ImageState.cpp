@@ -738,7 +738,6 @@ bool ImageState::imageToRealSpace(int& realX, int& realY, int imgX, int imgY) {
 }
 
 void ImageState::addPieceToBoard(std::list<CheckersPiece>& originalList, CheckersPiece piece) {
-    std::cout << "Added piece: " << (int)originalList.size() << "\n";
     if(piece.isBlue) {
         bluePiecesOnBoard.push_back(piece);
     }
@@ -752,7 +751,6 @@ void ImageState::addPieceToBoard(std::list<CheckersPiece>& originalList, Checker
     else {
         std::cout << "Could not erase from original off board list\n";
     }
-    std::cout << "Done adding piece: " << (int)originalList.size() << "\n";
 }
 
 void ImageState::removeFromBoard(std::list<CheckersPiece>& originalList, CheckersPiece piece) {
