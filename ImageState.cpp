@@ -405,6 +405,7 @@ void ImageState::createMoveList(std::list<ImageMove>& moveList, const char desir
     std::cout << "Classified Incorrect Squares\n";
     std::cout << "Should be empty: " << (int)shouldBeEmpty.size() << std::endl;
     std::cout << "Should be filled: " << (int)shouldBeFilled.size() << std::endl;
+    std::cout << "Error pieces:" << (int)redErrorPiecesOnBoard.size() + (int)blueErrorPiecesOnBoard.size() << std::endl;
     // Try matching error pieces first
     for(CheckersPiece& cp : redErrorPiecesOnBoard) {
         ImageMove move;
