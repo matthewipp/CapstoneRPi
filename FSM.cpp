@@ -43,6 +43,7 @@ void FSM::nextState() {
                     }
                     else {
                         std::cout << "Image Aligned SUccessfully\n";
+                        sendFlags |= FLAG_SEND_WAIT_HOME;
                         aligned = true;
                     }
                 }
