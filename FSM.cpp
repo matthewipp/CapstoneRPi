@@ -63,6 +63,7 @@ void FSM::nextState() {
                         std::cout << "Move list created\n";
                         if(boardState.majorFault) {
                             sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                            moveList.clear();
                             tempNextState = WAIT_FOR_PLAYER;
                         }
                         else if(moveList.size() == 0) {
@@ -78,11 +79,13 @@ void FSM::nextState() {
                     }
                     else {
                         sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                        moveList.clear();
                         tempNextState = WAIT_FOR_PLAYER;
                     }
                 }
                 else {
                     sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                    moveList.clear();
                     tempNextState = WAIT_FOR_PLAYER;
                 }
             }
@@ -103,6 +106,7 @@ void FSM::nextState() {
                         boardState.createMoveList(moveList, boardState.lastValidBoardState);
                         if(boardState.majorFault) {
                             sendFlags |= FLAG_SEND_MAJOR_FAULT | FLAG_SEND_WAIT_HOME;
+                            moveList.clear();
                             tempNextState = WAIT_FOR_PLAYER;
                             std::cout << "Error generating moves\n";
                         }
@@ -127,6 +131,7 @@ void FSM::nextState() {
                         std::cout << "Moves to make: " << (int)moveList.size() << std::endl;
                         if(boardState.majorFault) {
                             sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                            moveList.clear();
                             tempNextState = WAIT_FOR_PLAYER;
                         }
                         else if(moveList.size() == 0) {
