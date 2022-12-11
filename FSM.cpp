@@ -39,7 +39,7 @@ void FSM::nextState() {
                 if(imgSuccess) {
                     bool boardSuccess = boardState.alignCamera(img);
                     if(!boardSuccess) {
-                        sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                        sendFlags |= FLAG_SEND_MAJOR_FAULT | FLAG_SEND_WAIT_HOME;
                     }
                     else {
                         std::cout << "Image Aligned SUccessfully\n";
@@ -47,7 +47,7 @@ void FSM::nextState() {
                     }
                 }
                 else {
-                    sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                    sendFlags |= FLAG_SEND_MAJOR_FAULT | FLAG_SEND_WAIT_HOME;
                 }
             }
             else if(currentFlags & FLAG_RECV_START) {
@@ -62,7 +62,7 @@ void FSM::nextState() {
                         boardState.createMoveList(moveList);
                         std::cout << "Move list created\n";
                         if(boardState.majorFault) {
-                            sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                            sendFlags |= FLAG_SEND_MAJOR_FAULT | FLAG_SEND_WAIT_HOME;
                             moveList.clear();
                             tempNextState = WAIT_FOR_PLAYER;
                         }
@@ -78,13 +78,13 @@ void FSM::nextState() {
                         }
                     }
                     else {
-                        sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                        sendFlags |= FLAG_SEND_MAJOR_FAULT | FLAG_SEND_WAIT_HOME;
                         moveList.clear();
                         tempNextState = WAIT_FOR_PLAYER;
                     }
                 }
                 else {
-                    sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                    sendFlags |= FLAG_SEND_MAJOR_FAULT | FLAG_SEND_WAIT_HOME;
                     moveList.clear();
                     tempNextState = WAIT_FOR_PLAYER;
                 }
@@ -131,6 +131,7 @@ void FSM::nextState() {
                         std::cout << "Moves to make: " << (int)moveList.size() << std::endl;
                         if(boardState.majorFault) {
                             sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                            sendFLags |= FLAG_SEND_WAIT_HOME;
                             moveList.clear();
                             tempNextState = WAIT_FOR_PLAYER;
                         }
@@ -145,6 +146,7 @@ void FSM::nextState() {
                 }
                 else {
                     sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                    sendFlags |= FLAG_SEND_WAIT_HOME;
                     tempNextState = WAIT_FOR_PLAYER;
                 }
             }
