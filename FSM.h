@@ -50,6 +50,8 @@ class FSM {
         std::list<ImageMove> moveList;
         bool dataSent;
         Bot jimmy;
+        bool aligned;
+        bool gameStarted;
         std::chrono::system_clock::time_point lastDataSent;
         // sets the output array to the message
         void setOutput(char flags);

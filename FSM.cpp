@@ -23,6 +23,8 @@ FSM::FSM() {
     jimmy.evalFunc = &Bot::evalIV;
     jimmy.max_depth = jimmy_depth;
     lastDataSent = std::chrono::system_clock::now();
+    aligned = false;
+    gameStarted = false;
 }
 
 void FSM::nextState() {
@@ -41,6 +43,7 @@ void FSM::nextState() {
                     }
                     else {
                         std::cout << "Image Aligned SUccessfully\n";
+                        aligned = true;
                     }
                 }
                 else {
@@ -52,7 +55,7 @@ void FSM::nextState() {
                 tempNextState = SEND_MOVES;
                 cv::Mat img;
                 bool imgSuccess = takePicture(img);
-                if(imgSuccess) {
+                if(imgSuccess && aligned) {
                     bool boardSuccess = boardState.generateBoardstate(img, false);
                     jimmy.init_board();
                     if(boardSuccess) {
@@ -64,10 +67,12 @@ void FSM::nextState() {
                         }
                         else if(moveList.size() == 0) {
                             tempNextState = WAIT_FOR_PLAYER;
+                            gameStarted = true;
                             std::memcpy(boardState.lastValidBoardState, boardState.STARTING_BOARD, sizeof(boardState.STARTING_BOARD));
                         }
                         else {
                             sendFlags |= FLAG_SEND_MOVE;
+                            gameStarted = true;
                             std::memcpy(boardState.lastValidBoardState, boardState.STARTING_BOARD, sizeof(boardState.STARTING_BOARD));
                         }
                     }
@@ -86,7 +91,7 @@ void FSM::nextState() {
                 tempNextState = SEND_MOVES;
                 cv::Mat img;
                 bool imgSuccess = takePicture(img);
-                if(imgSuccess) {
+                if(imgSuccess && aligned && gameStarted) {
                     bool boardSuccess = boardState.generateBoardstate(img);
                     if(boardState.majorFault) {
                         // Big uh oh do nothing
