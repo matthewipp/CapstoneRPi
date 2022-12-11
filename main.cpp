@@ -41,6 +41,7 @@ int runCheckers(int argc, char** argv) {
     std::this_thread::sleep_for(std::chrono::milliseconds(250));
     uart.sendData(blankPing, 11);
     std::this_thread::sleep_for(std::chrono::milliseconds(250));
+    uart.flush();
     std::thread tCalc;
     // main loop
     while(true) {
