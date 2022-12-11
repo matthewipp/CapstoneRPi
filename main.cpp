@@ -16,7 +16,7 @@
 #include "Comms.h"
 #include "ImageState.h"
 
-int jimmy_depth = 10;
+int jimmy_depth = 8;
 bool enable_jr = true;
 
 void fsmLoop(FSM& fsm, volatile bool& calculating) {
