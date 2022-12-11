@@ -37,7 +37,7 @@ int runCheckers(int argc, char** argv) {
     while(!uart.isConnected()) {
         uart.openConnection();
     }
-    const char[11] blankPing = {0xFF, 0xFF, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+    const char blankPing[11] = {0xFF, 0xFF, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
     std::this_thread::sleep_for(std::chrono::milliseconds(250));
     uart.sendData(blankPing, 11);
     std::this_thread::sleep_for(std::chrono::milliseconds(250));
