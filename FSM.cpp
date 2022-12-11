@@ -140,6 +140,7 @@ void FSM::nextState() {
                 }
                 else {
                     sendFlags |= FLAG_SEND_MAJOR_FAULT;
+                    tempNextState = WAIT_FOR_PLAYER;
                 }
             }
             else {
