@@ -130,8 +130,7 @@ void FSM::nextState() {
                         boardState.createMoveList(moveList, jimmy.board);
                         std::cout << "Moves to make: " << (int)moveList.size() << std::endl;
                         if(boardState.majorFault) {
-                            sendFlags |= FLAG_SEND_MAJOR_FAULT;
-                            sendFLags |= FLAG_SEND_WAIT_HOME;
+                            sendFlags |= FLAG_SEND_MAJOR_FAULT | FLAG_SEND_WAIT_HOME;
                             moveList.clear();
                             tempNextState = WAIT_FOR_PLAYER;
                         }
